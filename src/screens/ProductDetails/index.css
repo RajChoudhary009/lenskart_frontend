@@ -1,0 +1,368 @@
+.product-details-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.breadcrumb {
+    color: #777;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    gap: 20px;
+    margin-top: 10px;
+}
+@media screen and (max-width: 768px){
+    .main-content{
+        flex-direction: column;
+    }
+}
+
+.product-image-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
+}
+@media screen and (max-width: 768px){
+    .product-image-section{
+            width: 100%;
+     }
+}
+
+.main-image {
+    width: 100%;
+    height: 400px;
+    background: #ddd;
+}
+
+.larg-image {
+    width: 100%;
+    height: 400px;
+}
+
+
+.thumbnail-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+@media screen and (max-width: 768px){
+    .thumbnail-row{
+        display: none;
+    }
+}
+
+.thumbnail {
+    width: 136px;
+    height: 120px;
+    background: #ccc;
+}
+.mini-image {
+    width: 136px;
+    height: 120px;
+}
+
+
+.product-info-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 45%;
+}
+@media screen and (max-width: 768px){
+    .product-info-section{
+        width: 100%;
+    }
+}
+
+.product-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    color: #002266;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.try-on-btn {
+    background-color: #00bcd4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.cart-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* margin-bottom: 20px; */
+    width: 100%;
+}
+
+.quantity-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #00bcd4;
+    padding: 10px;
+    border: none;
+    background-color: #f7f4f4;
+    height: 35px;
+    width: 35px;
+    border-radius: 18px;
+    cursor: pointer;
+}
+
+.quantity {
+    padding-top: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.add-to-cart-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #10b2c7;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    /* Make it take up the full width of its container */
+    max-width: 170px;
+    /* Set a maximum width to keep the button within reasonable size */
+    text-align: center;
+}
+
+.buy-now-btn {
+    background-color: #000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 133px;
+}
+
+.technical-details {
+    margin-top: 20px;
+}
+
+.technical-details h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.technical-details ul {
+    list-style: none;
+    padding: 0;
+}
+
+.technical-details ul li {
+    margin-bottom: 5px;
+}
+
+/* Customer Reviews */
+.customer-reviews {
+    margin-top: 40px;
+    width: 80%;
+}
+
+.customer-reviews h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.customer-reviews .reviews-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.review-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    width: 23%;
+    text-align: left;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Suggested Frames */
+.suggested-frames {
+    margin-top: 20px;
+    width: 80%;
+}
+
+.suggested-frames h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.suggested-frames .frames-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.frame-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    width: 23%;
+    text-align: left;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.frame-image {
+    height: 150px;
+    background: #ddd;
+    margin-bottom: 10px;
+}
+
+.frame-price {
+    font-weight: bold;
+    color: #002266;
+}
+.frame-price-description{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Power Popup */
+.power-popup {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 500px;
+    height: 100%;
+    background: #f7f4f0;
+    box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transform: translateX(0);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+    width: 100%;
+}
+
+.popup-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #002266;
+    width: auto;
+}
+
+.close-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #00bcd4;
+    text-align: right;
+    width: 100px;
+    height: 40px;
+}
+
+.popup-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.lens-option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    /* height: 100px; */
+    transition: background 0.3s;
+}
+
+.price-info-popup{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 25px;
+    background-color: #ebeeef;
+}
+
+.lens-option:hover {
+    background: #ececec;
+}
+
+.lens-info {
+    flex-grow: 1;
+    margin-left: 15px;
+}
+
+.lens-info h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #002266;
+}
+
+.lens-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.icon {
+    font-size: 2rem;
+}
+
+.arrow {
+    font-size: 1.5rem;
+    color: #ccc;
+}
+
+.footer-info {
+    padding-top: 0;
+    margin-top: 0;
+    padding: 15px;
+    font-size: 0.9rem;
+    text-align: center;
+    color: #999;
+}
