@@ -60,30 +60,30 @@ const ProductDetails = () => {
     const [selectLansType, setSelectLansType] = useState('')
     // console.log(reviewData)
 
-    useEffect(() => {
-        const fetchData1 = async () => {
+    // useEffect(() => {
+    //     const fetchData1 = async () => {
 
-            axios.get('https://driver-vehicle-licensing.api.gov.uk/endpoint', {
-                headers: {
-                    'x-api-key': 'b1kcfWfJVF7rzqzPmOu1o1poab0DhcXM8uyI5bRi',
-                    'Content-Type': 'application/json',
-                },
-                body: {
-                    "registrationNumber": "TE57VRN"
-                }
-            })
-                .then(response => {
-                    console.log("hhhhh", response.data);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-            // console.log('response', response)
+    //         axios.get('https://driver-vehicle-licensing.api.gov.uk/endpoint', {
+    //             headers: {
+    //                 'x-api-key': 'b1kcfWfJVF7rzqzPmOu1o1poab0DhcXM8uyI5bRi',
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: {
+    //                 "registrationNumber": "TE57VRN"
+    //             }
+    //         })
+    //             .then(response => {
+    //                 console.log("hhhhh", response.data);
+    //             })
+    //             .catch(error => {
+    //                 console.error(error);
+    //             });
+    //         // console.log('response', response)
 
-        };
+    //     };
 
-        fetchData1();
-    }, []);
+    //     fetchData1();
+    // }, []);
 
     const handleImageClick = (imageSrc) => {
         setSelectedImage(imageSrc);
@@ -142,7 +142,7 @@ const ProductDetails = () => {
                                         <div className="thumbnail">
                                             <img
                                                 className='mini-image'
-                                                src={`http://localhost:8000/${item?.result?.product_all_img[0]}`}
+                                                src={`${SERVER_API_URL}/${item?.result?.product_all_img[0]}`}
                                                 alt={`ImageItem ${product_id + 1}`}
                                                 onClick={() => handleImageClick(`${SERVER_API_URL}/${item?.result?.product_all_img[0]}`)}
                                             />
@@ -171,7 +171,7 @@ const ProductDetails = () => {
                                                 className='mini-image'
                                                 src={`${SERVER_API_URL}/${item?.result?.product_all_img[3]}`}
                                                 alt={`ImageItem ${product_id + 1}`}
-                                                onClick={() => handleImageClick(`http://localhost:8000/${item?.result?.product_all_img[3]}`)}
+                                                onClick={() => handleImageClick(`${SERVER_API_URL}/${item?.result?.product_all_img[3]}`)}
                                             />
                                         </div>
 
