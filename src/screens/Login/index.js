@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
+import { SERVER_API_URL } from '../../server/server';
 import axios from "axios";
 import yourPerfectPairBanner from '../../Assets/images/your-perfect-pair-banner.webp';
 
@@ -19,7 +20,7 @@ const Login = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:8000/api/login",
+                `${SERVER_API_URL}/api/login`,
                 { mobile_num: userLogin.mobile_num },
                 {
                     headers: { "Content-Type": "application/json" },

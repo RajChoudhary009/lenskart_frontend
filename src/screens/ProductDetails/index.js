@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { SERVER_API_URL } from '../../server/server';
 import axios from 'axios'; // Import Axios
 import { GlobleInfo } from '../../App';
 import tdesign from '../../Assets/images/tdesign_cart.png';
@@ -100,7 +101,7 @@ const ProductDetails = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/product/productdetail/${product_id}`);
+                const response = await axios.get(`${SERVER_API_URL}/product/productdetail/${product_id}`);
                 console.log("response new", response.data)
                 setItem(response.data);
                 setLoading(false);
@@ -133,7 +134,7 @@ const ProductDetails = () => {
                         {/* Main Product Image Section */}
                         <div className="product-image-section">
                             <div className="main-image">
-                                <img className='larg-image' src={selectedImage ? selectedImage : `http://localhost:8000/${item?.result?.product_thumnail_img}`} alt={`Large Image`} />
+                                <img className='larg-image' src={selectedImage ? selectedImage : `${SERVER_API_URL}/${item?.result?.product_thumnail_img}`} alt={`Large Image`} />
                             </div>
                             <div className="thumbnail-row">
                                 {item?.result && item.result.product_all_img && (
@@ -143,32 +144,32 @@ const ProductDetails = () => {
                                                 className='mini-image'
                                                 src={`http://localhost:8000/${item?.result?.product_all_img[0]}`}
                                                 alt={`ImageItem ${product_id + 1}`}
-                                                onClick={() => handleImageClick(`http://localhost:8000/${item?.result?.product_all_img[0]}`)}
+                                                onClick={() => handleImageClick(`${SERVER_API_URL}/${item?.result?.product_all_img[0]}`)}
                                             />
                                         </div>
 
                                         <div className="thumbnail">
                                             <img
                                                 className='mini-image'
-                                                src={`http://localhost:8000/${item?.result?.product_all_img[1]}`}
+                                                src={`${SERVER_API_URL}/${item?.result?.product_all_img[1]}`}
                                                 alt={`ImageItem ${product_id + 1}`}
-                                                onClick={() => handleImageClick(`http://localhost:8000/${item?.result?.product_all_img[1]}`)}
+                                                onClick={() => handleImageClick(`${SERVER_API_URL}/${item?.result?.product_all_img[1]}`)}
                                             />
                                         </div>
 
                                         <div className="thumbnail">
                                             <img
                                                 className='mini-image'
-                                                src={`http://localhost:8000/${item?.result?.product_all_img[2]}`}
+                                                src={`${SERVER_API_URL}/${item?.result?.product_all_img[2]}`}
                                                 alt={`ImageItem ${product_id + 1}`}
-                                                onClick={() => handleImageClick(`http://localhost:8000/${item?.result?.product_all_img[2]}`)}
+                                                onClick={() => handleImageClick(`${SERVER_API_URL}/${item?.result?.product_all_img[2]}`)}
                                             />
                                         </div>
 
                                         <div className="thumbnail">
                                             <img
                                                 className='mini-image'
-                                                src={`http://localhost:8000/${item?.result?.product_all_img[3]}`}
+                                                src={`${SERVER_API_URL}/${item?.result?.product_all_img[3]}`}
                                                 alt={`ImageItem ${product_id + 1}`}
                                                 onClick={() => handleImageClick(`http://localhost:8000/${item?.result?.product_all_img[3]}`)}
                                             />

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { GlobleInfo } from '../../App';
 import { Link } from 'react-router-dom';
+import { SERVER_API_URL } from '../../server/server';
 import axios from 'axios';
 import Header from "../../components/Header";
 import tdesign from '../../Assets/images/tdesign_cart.png';
@@ -27,7 +28,7 @@ const ProductDisplay = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/product');
+        const response = await axios.get(`${SERVER_API_URL}/product`);
         setAllProducts(response.data.result);
         setFilteredProducts(response.data.result);
         console.log("first", response.data.result)
@@ -173,7 +174,7 @@ const ProductDisplay = () => {
             {filteredProducts.map((product, index) => (
               <div key={index} className="product-card">
                 <Link to={`/product-item/${product.product_id}`}>
-                  <img className='carousel-image2' src={`http://localhost:8000/${product?.product_thumnail_img}`} alt={`ImageItem ${product.product_id + 1}`} />
+                  <img className='carousel-image2' src={`${SERVER_API_URL}/${product?.product_thumnail_img}`} alt={`ImageItem ${product.product_id + 1}`} />
                 </Link>
                 <div className="product-info">
                   <h4 className="product-hilight">{product.product_title}</h4>
