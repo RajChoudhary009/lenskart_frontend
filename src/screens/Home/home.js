@@ -35,7 +35,7 @@ const Home = () => {
       <div className='home-bg-container'>
         <div className='home-main-container'>
           {/* Top Banners */}
-          <Link to="/product-display">
+          <Link to="#">
             <div className='your-perfect-pair'>
               <div className='yourPerfectPairBanner-container'>
                 <img src={yourPerfectPairBanner} className='yourPerfectPairBanner' alt='Your Perfect Pair Banner' />
@@ -55,38 +55,43 @@ const Home = () => {
 
             <div className="categories-grid">
               <div className="category-item">
-                <Link to="/product-display"><img src={aviatorVector} alt="Aviator" className="category-icon" /></Link>
+                <Link to={`/product-display/${"Aviator"}`}><img src={aviatorVector} alt="Aviator" className="category-icon" /></Link>
                 <p>Aviator</p>
               </div>
               <div className="category-item">
-                <Link to="/product-display"><img src={catsEye} alt="Cats Eye" className="category-icon" /></Link>
+                <Link to={`/product-display/${"Cats Eye"}`}><img src={catsEye} alt="Cats-Eye" className="category-icon" /></Link>
                 <p>Cats Eye</p>
               </div>
               <div className="category-item">
-                <Link to="/product-display"><img src={rectangleVector} alt="Rectangle" className="category-icon" /></Link>
+                <Link to={`/product-display/${"Rectangle"}`}><img src={rectangleVector} alt="Rectangle" className="category-icon" /></Link>
                 <p>Rectangle</p>
               </div>
               <div className="category-item">
-                <Link to="/product-display"><img src={roundVector} alt="Round" className="category-icon" /></Link>
+                <Link to={`/product-display/${"Round"}`}><img src={roundVector} alt="Round" className="category-icon" /></Link>
                 <p>Round</p>
               </div>
               <div className="category-item">
-                <Link to="/product-display"><img src={squareVector} alt="Square" className="category-icon" /></Link>
+                <Link to={`/product-display/${"Square"}`}><img src={squareVector} alt="Square" className="category-icon" /></Link>
                 <p>Square</p>
               </div>
               <div className="category-item">
-                <Link to="/product-display"><img src={wayfarerVector} alt="Wayfarer" className="category-icon" /></Link>
+                <Link to={`/product-display/${"Wayfarer"}`}><img src={wayfarerVector} alt="Wayfarer" className="category-icon" /></Link>
                 <p>Wayfarer</p>
               </div>
             </div>
           </div>
 
           {/* Helius Eyewear Section */}
-          <div className="helius-text">
-            <h2 className='Helius-Eyewear'>Helius Eyewear</h2>
-            <hr className='hr-line' />
+
+          <div className='single-banner-container'>
+            <div className="helius-text">
+              <h2 className='Helius-Eyewear'>Helius Eyewear</h2>
+              <hr className='hr-line' />
+            </div>
+
+            <Link to={`/product-display/${"Helius Glasses"}`}> <img src={heliusGlasses} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
-          <Link to="/product-display"> <img src={heliusGlasses} alt="Helius Glasses" className="helius-glasses-image" /></Link>
+
 
           {/* Eyeglasses-container */}
           <div className='Eyeglasses-container'>
@@ -96,7 +101,7 @@ const Home = () => {
               <div className='Eyeglasses-home'>
 
                 <div className='pawerGlass-container'>
-                  <Link to="/product-display"> <img src={pawerGlass} className='pawerGlass' /></Link>
+                  <Link to={`/product-display/${"Square"}`}> <img src={pawerGlass} className='pawerGlass' /></Link>
                   <div className='pawerglass-text-container'>
                     <p className='Power-Glasses-text'>Power Glasses</p>
                     <h1 className='Rim-Rectangle-text'>Black Full Rim Rectangle</h1>
@@ -104,7 +109,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className='pawerGlass-container'>
-                  <Link to="/product-display"><img src={pawerGlass} className='pawerGlass' /></Link>
+                  <Link to={`/product-display/${"Square"}`}><img src={pawerGlass} className='pawerGlass' /></Link>
                   <div className='pawerglass-text-container'>
                     <p className='Power-Glasses-text'>Power Glasses</p>
                     <h1 className='Rim-Rectangle-text'>Black Full Rim Rectangle</h1>
@@ -160,13 +165,15 @@ const Home = () => {
           </div>
 
           {/* Helius Eyewear Section */}
-          <div className="helius-text">
-            <h2 className='Lykos-Eyewear'>Lykos Eyewear</h2>
-            <hr className='hr-line' />
+          <div className='single-banner-container'>
+            <div className="helius-text">
+              <h2 className='Helius-Eyewear'>Lykos Eyewear</h2>
+              <hr className='hr-line' />
+            </div>
+            <Link to={`/product-display/${"Square"}`}><img src={lykosEyewear} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
-          <Link to="/product-display"><img src={lykosEyewear} alt="Helius Glasses" className="helius-glasses-image" /></Link>
-
           {/* Eyeglasses-container */}
+
           <div className='Eyeglasses-container'>
             <div className='Eyeglasses-container-main'>
               <h1 className='Eyeglasses-text'>Eyeglasses</h1>
@@ -228,11 +235,13 @@ const Home = () => {
           </div>
 
           {/* Lykos Eyewear Section */}
-          <div className="helius-text">
-            <h2 className='Helius-Eyewear'>Lykos Eyewear</h2>
-            <hr className='hr-line' />
+          <div className='single-banner-container'>
+            <div className="helius-text">
+              <h2 className='Helius-Eyewear'>Lykos Eyewear</h2>
+              <hr className='hr-line' />
+            </div>
+            <Link to="/product-display"> <img src={stayAheadInStyleBanner} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
-          <Link to="/product-display"> <img src={stayAheadInStyleBanner} alt="Helius Glasses" className="helius-glasses-image" /></Link>
 
           {/* Eyeglasses-container */}
           <div className='Eyeglasses-container'>
@@ -261,11 +270,13 @@ const Home = () => {
           </div>
 
           {/* Blinkers Eyeglasses Section */}
-          <div className="helius-text">
-            <h2 className='Helius-Eyewear'>Blinkers Eyeglasses</h2>
-            <hr className='hr-line' />
+          <div className='single-banner-container'>
+            <div className="helius-text">
+              <h2 className='Helius-Eyewear'>Blinkers Eyeglasses</h2>
+              <hr className='hr-line' />
+            </div>
+            <Link to={`/product-display/${"Square"}`}><img src={Blinkers} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
-          <Link to="/product-display"><img src={Blinkers} alt="Helius Glasses" className="helius-glasses-image" /></Link>
 
           {/* Eyeglasses-container */}
           <div className='Eyeglasses-container'>
@@ -294,12 +305,14 @@ const Home = () => {
           </div>
 
           {/* EyePoppin Eyeglasses Section */}
-          <div className="helius-text">
-            <h2 className='Helius-Eyewear'>EyePoppin Eyeglasses</h2>
-            <hr className='hr-line' />
+          <div className='single-banner-container'>
+            <div className="helius-text">
+              <h2 className='Helius-Eyewear'>EyePoppin Eyeglasses</h2>
+              <hr className='hr-line' />
+            </div>
+            <Link to={`/product-display/${"Square"}`}> <img src={EyePoppin} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
-          <Link to="/product-display"> <img src={EyePoppin} alt="Helius Glasses" className="helius-glasses-image" /></Link>
-
+          
           {/* Eyeglasses-container */}
           <div className='Eyeglasses-container'>
             <div className='Eyeglasses-container-main'>

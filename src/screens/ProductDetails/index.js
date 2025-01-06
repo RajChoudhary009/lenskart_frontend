@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { SERVER_API_URL } from '../../server/server';
 import axios from 'axios'; // Import Axios
 import { GlobleInfo } from '../../App';
+// import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 import tdesign from '../../Assets/images/tdesign_cart.png';
 import { ColorRing } from 'react-loader-spinner';
 import "./index.css"; // Import the corresponding CSS file
@@ -15,12 +17,12 @@ const reviews = [
     { id: 4, user: "Nasrin Ahmed", comment: "Very perfect and beautiful.", date: "3 days ago", rating: 5 }
 ];
 
-const suggestedFrames = [
-    { id: 1, name: "Black Full Rim Rectangle", price: 2750, color: "Black", material: "Plastic", rating: 5 },
-    { id: 2, name: "Black Full Rim Rectangle", price: 2750, color: "Black", material: "Plastic", rating: 5 },
-    { id: 3, name: "Black Full Rim Rectangle", price: 2750, color: "Black", material: "Plastic", rating: 5 },
-    { id: 4, name: "Black Full Rim Rectangle", price: 2750, color: "Black", material: "Plastic", rating: 5 }
-];
+// const suggestedFrames = [
+//     { id: 1, name: "Black Full Rim Rectangle", price: 2750, color: "Black", material: "Plastic", rating: 5 },
+//     { id: 2, name: "Black Full Rim Rectangle", price: 2750, color: "Black", material: "Plastic", rating: 5 },
+//     { id: 3, name: "Black Full Rim Rectangle", price: 2750, color: "Black", material: "Plastic", rating: 5 },
+//     { id: 4, name: "Black Full Rim Rectangle", price: 2750, color: "Black", material: "Plastic", rating: 5 }
+// ];
 
 
 const lensData = {
@@ -50,53 +52,129 @@ const lensData = {
 
 
 const ProductDetails = () => {
+    const history = useNavigate();
     const { product_id } = useParams();
-    const { getProductCount } = useContext(GlobleInfo)
+    const [mobile_num, setMobile_num] = useState("");
+    const { getProductCount, saveCheckoutData } = useContext(GlobleInfo)
     const [item, setItem] = useState({});
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
     const [showPowerPopup, setShowPowerPopup] = useState(false);
     const [showPopupContainer, setShowPopupContainer] = useState(true);
+    const [showPopuplensePrice, setShowPopuplensePrice] = useState(false);
     const [selectLansType, setSelectLansType] = useState('')
-    // console.log(reviewData)
+    const [selectedLens, setSelectedLens] = useState({ type: '', price: '' });
+    const [leftLens, setLeftLens] = useState({ SPH: "-0.00", CYL: "-0.25" });
+    const [rightLens, setRightLens] = useState({ SPH: "-0.00", CYL: "-0.25" });
+    const [add, setAdd] = useState('')
+    const [axis, setAxis] = useState('')
 
-    // useEffect(() => {
-    //     const fetchData1 = async () => {
+    useEffect(() => {
+        // Retrieve cart items from local storage
+        // const cartItemsFromLocalStorage = JSON.parse(localStorage.getItem('cart')) || [];
+        // Access token from local storage
 
-    //         axios.get('https://driver-vehicle-licensing.api.gov.uk/endpoint', {
-    //             headers: {
-    //                 'x-api-key': 'b1kcfWfJVF7rzqzPmOu1o1poab0DhcXM8uyI5bRi',
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: {
-    //                 "registrationNumber": "TE57VRN"
-    //             }
-    //         })
-    //             .then(response => {
-    //                 console.log("hhhhh", response.data);
-    //             })
-    //             .catch(error => {
-    //                 console.error(error);
-    //             });
-    //         // console.log('response', response)
+        const token = localStorage.getItem('token'); // Replace 'yourTokenKey' with your actual token key
+        if (token) {
+            // Decode the token to get user information
+            const decodedToken = jwtDecode(token);
+            const mobile_num = decodedToken.mobile_num;
+            setMobile_num(mobile_num)
+            // console.log("Decoded Mobile Number:", mobile_num);
+        }
+    }, []);
 
-    //     };
+    const handleSubmit = () => {
+        if (selectLansType) {
+            const power = {
+                selectLansType,
+                selectedLensOrProducrPrice: selectedLens.price + product_price,
+                selectedType: selectedLens.type,
+                leftLens,
+                rightLens,
+                axis,
+                add,
+            };
+            const product = {
+                mobile_number: mobile_num,
+                product_id: product_id
+            }
 
-    //     fetchData1();
-    // }, []);
+            // Save the data to context
+            saveCheckoutData({ power, product });
+
+            // Navigate to the checkout page
+            history('/ChekOutPage')
+        } else {
+            alert("Please select valid options.");
+        }
+    };
+
+    const handleDirectPayment = () => {
+        if (product_price, mobile_num, product_id) {
+            const power = {
+                selectedLensOrProducrPrice: product_price,
+            }
+            const product = {
+                mobile_number: mobile_num,
+                product_id: product_id
+            }
+             // Save the data to context
+             saveCheckoutData({ power, product });
+
+             // Navigate to the checkout page
+             history('/ChekOutPage')
+        } else {
+            alert("Please select valid options.");
+        }
+       
+    }
 
     const handleImageClick = (imageSrc) => {
         setSelectedImage(imageSrc);
     };
 
     const handlePowerClick = () => {
+        const token = localStorage.getItem('token'); // Replace 'yourTokenKey' with your actual token key
+        if (!token) {
+            console.error('User details not found.');
+            history('/login', { replace: true })
+            return;
+        }
         setShowPowerPopup(!showPowerPopup);
     };
+
 
     const handleLanseClick = (type) => {
         setSelectLansType(type);
         setShowPopupContainer(false)
+        setShowPopuplensePrice(true)
     };
+
+    // Function to show the popup and set the lens type and price
+    const showPawerPopup = (lensType, lensPrice) => {
+        setShowPopuplensePrice(false)
+        setSelectedLens({ type: lensType, price: lensPrice });
+    };
+
+    const handleLensChange = (lens, field, value) => {
+        if (lens === 'left') {
+            setLeftLens((prev) => ({ ...prev, [field]: value }));
+        } else {
+            setRightLens((prev) => ({ ...prev, [field]: value }));
+        }
+    };
+    const handleChangeAdd = (field, value) => {
+        if (field === 'ADD') {
+            setAdd(parseFloat(value));
+        }
+    };
+    const handleChangeAxis = (field, value) => {
+        if (field === 'AXIS') {
+            setAxis(parseFloat(value));
+        }
+    };
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -104,15 +182,17 @@ const ProductDetails = () => {
                 const response = await axios.get(`${SERVER_API_URL}/product/productdetail/${product_id}`);
                 console.log("response new", response.data)
                 setItem(response.data);
-                setLoading(false);
-                console.log('response', response)
             } catch (error) {
                 console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchData();
     }, [product_id]);
+
+    const product_price = item?.result?.product_price - (item?.result?.product_price * item?.result?.discount / 100)
 
     return (
         <>
@@ -184,31 +264,76 @@ const ProductDetails = () => {
                         {/* Product Info Section */}
                         <div className="product-info-section">
                             <h1 className="product-title">{item?.result?.highlights} Stylish Sunglasses</h1>
-                            <p className="product-price">₹2750.00</p>
+                            <p className="product-price">₹{product_price.toFixed(0)}</p>
                             <button className="try-on-btn">TRY ON FACE</button>
+                            <button className="add-to-cart-btn"><img src={tdesign} style={{ marginRight: "10px" }} alt="tdesign" />ADD TO CART</button>
 
                             <div className="cart-controls">
-                                <button className="quantity-btn">-</button>
+                                {/* <button className="quantity-btn">-</button>
                                 <span className="quantity">1</span>
-                                <button className="quantity-btn">+</button>
-                                <button className="add-to-cart-btn"><img src={tdesign} alt="tdesign" />ADD TO CART</button>
+                                <button className="quantity-btn">+</button> */}
+                                {/* <button className="add-to-cart-btn"><img src={tdesign} alt="tdesign" />ADD TO CART</button> */}
                             </div>
                             <div className="cart-controls">
-                                <button className="buy-now-btn">BUY NOW</button>
+                                <button className="buy-now-btn" onClick={handleDirectPayment}>BUY NOW</button>
                                 <button className="buy-now-btn" onClick={handlePowerClick}>ADD POWER</button>
                             </div>
-
 
                             <div className="technical-details">
                                 <h3>Technical Details</h3>
                                 <ul>
                                     <li>Product ID: DCM413</li>
                                     <li>Frame Dimensions: 54 mm / 16 mm / 145 mm</li>
-                                    <li>Frame Color: Grey</li>
-                                    <li>Lens Color: Black</li>
+                                    <li style={{ display: "flex" }}>
+                                        <strong>Color: </strong>
+                                        <div className="color-options">
+                                            {item?.result?.color ? (
+                                                (() => {
+                                                    let colors = [];
+                                                    try {
+                                                        // Parse the `color` JSON string
+                                                        colors = JSON.parse(item.result.color);
+                                                        if (!Array.isArray(colors)) {
+                                                            console.error("Parsed colors is not an array");
+                                                            colors = [];
+                                                        }
+                                                    } catch (err) {
+                                                        console.error("Failed to parse color data:", err);
+                                                    }
+                                                    return colors.length > 0 ? (
+                                                        colors.map((colorObj, index) => {
+                                                            const [colorName, colorCode] = Object.entries(colorObj)[0];
+                                                            return (
+                                                                <span
+                                                                    key={index}
+                                                                    className="color-box"
+                                                                    title={colorName}
+                                                                    style={{
+                                                                        backgroundColor: colorCode,
+                                                                        display: 'inline-block',
+                                                                        width: '40px',
+                                                                        height: '20px',
+                                                                        borderRadius: '10px',
+                                                                        margin: '0 5px',
+                                                                        border: '1px solid #ddd',
+                                                                        cursor: 'pointer',
+                                                                    }}
+                                                                ></span>
+                                                            );
+                                                        })
+                                                    ) : (
+                                                        <span style={{ marginLeft: "10px" }}>No colors available</span>
+                                                    );
+                                                })()
+                                            ) : (
+                                                <span style={{ marginLeft: "10px" }}>No colors available</span>
+                                            )}
+                                        </div>
+                                    </li>
                                     <li>Product Shape: Rectangle</li>
                                 </ul>
                             </div>
+
                         </div>
                     </div>
 
@@ -229,23 +354,30 @@ const ProductDetails = () => {
                     <div className="suggested-frames">
                         <h2>Suggested Frames</h2>
                         <div className="frames-row">
-                            {suggestedFrames.map((frame) => (
-                                <div key={frame.id} className="frame-card">
-                                    <div className="frame-image"></div>
-                                    <p style={{ color: "#B2EB15" }}>{'★'.repeat(frame.rating)}</p>
-                                    <h3 style={{ color: "#0296E5", marginBottom: "10px" }}>Amezing glasess</h3>
-                                    <h3>{frame.name}</h3>
-                                    <p className="frame-price">₹{frame.price}</p>
-                                    <div className='frame-price-description'>
-                                        <div>
-                                            <p>Color: {frame.color}</p>
-                                            <p>Material: {frame.material}</p>
+                            {item?.suggestedProducts?.length > 0 ? (
+                                item.suggestedProducts.map((frame) => (
+                                    <div key={frame.id} className="frame-card">
+                                        <div className="frame-image">
+                                            {frame.product_thumnail_img ? (
+                                                <img src={`${SERVER_API_URL}/${frame.product_thumnail_img}`} alt={frame.name} style={{ maxWidth: "100%" }} />
+                                            ) : (
+                                                <div className="no-image">Image Not Available</div>
+                                            )}
                                         </div>
-                                        <button className="cart-btn"><img src={tdesign} alt="tdesign" /></button>
+                                        <h3>{frame.name || "Unnamed Product"}</h3>
+                                        <p className="frame-price">₹{frame.price || "N/A"}</p>
+                                        <p>Color: {frame.color || "N/A"}</p>
+                                        <p>Material: {frame.material || "N/A"}</p>
+                                        <button className="cart-btn">
+                                            <img src={tdesign} alt="Add to Cart" />
+                                        </button>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <p>No products match the selected criteria.</p>
+                            )}
                         </div>
+
                     </div>
 
                     {/* Power Popup Section */}
@@ -304,14 +436,14 @@ const ProductDetails = () => {
                                     </div>
                                     <div className="price-info-popup">
                                         <p>Sub Total</p>
-                                        <p>₹2000/-</p>
+                                        <p>₹{product_price}</p>
                                     </div>
                                 </div>
                             )}
-                            {!showPopupContainer && (
+                            {showPopuplensePrice && (
                                 <div className="popup-content">
                                     {lensData[selectLansType]?.map((lensOption, index) => (
-                                        <div key={index} className="lens-option">
+                                        <div key={index} className="lens-option" onClick={() => showPawerPopup(lensOption.type, lensOption.price)}>
                                             <div className="icon">👓</div>
                                             <div className="lens-info">
                                                 <h4>{lensOption.type}</h4>
@@ -322,10 +454,119 @@ const ProductDetails = () => {
                                     ))}
                                     <div className="price-info-popup">
                                         <p>Sub Total</p>
-                                        <p>₹2000/-</p>
+                                        <p>₹{product_price}</p>
                                     </div>
                                 </div>
                             )}
+
+                            {!showPopuplensePrice && !showPopupContainer && (<>
+                                <div className="power-bg-container">
+                                    <div className="lens-pricing-container">
+                                        <h1 className="pricing-title">What About Eye Power?</h1>
+                                        <p className="pricing-description">
+                                            You can select your eye power in the following table. Charges may be different from lens to lens based on the lens number.
+                                        </p>
+
+                                        <div className="lens-selection-table">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Left Lens</th>
+                                                        <th>Right Lens</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>SPH</td>
+                                                        <td>
+                                                            <select
+                                                                value={leftLens.SPH}
+                                                                onChange={(e) => handleLensChange('left', 'SPH', e.target.value)}
+                                                                className="lens-select"
+                                                            >
+                                                                {Array.from({ length: 81 }, (_, index) => {
+                                                                    const value = (-10 + index * 0.25).toFixed(2);
+                                                                    return <option key={value} value={value}>{value}</option>;
+                                                                })}
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select
+                                                                value={rightLens.SPH}
+                                                                onChange={(e) => handleLensChange('right', 'SPH', e.target.value)}
+                                                                className="lens-select"
+                                                            >
+                                                                {Array.from({ length: 81 }, (_, index) => {
+                                                                    const value = (-10 + index * 0.25).toFixed(2);
+                                                                    return <option key={value} value={value}>{value}</option>;
+                                                                })}
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>CYL</td>
+                                                        <td>
+                                                            <select
+                                                                value={leftLens.CYL}
+                                                                onChange={(e) => handleLensChange('left', 'CYL', e.target.value)}
+                                                                className="lens-select"
+                                                            >
+                                                                {Array.from({ length: 81 }, (_, index) => {
+                                                                    const value = (-6 + index * 0.25).toFixed(2);
+                                                                    return <option key={value} value={value}>{value}</option>;
+                                                                })}
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select
+                                                                value={rightLens.CYL}
+                                                                onChange={(e) => handleLensChange('right', 'CYL', e.target.value)}
+                                                                className="lens-select"
+                                                            >
+                                                                {Array.from({ length: 81 }, (_, index) => {
+                                                                    const value = (-6 + index * 0.25).toFixed(2);
+                                                                    return <option key={value} value={value}>{value}</option>;
+                                                                })}
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>AXIS</td>
+                                                        <td colSpan="2">
+                                                            <input
+                                                                type="number"
+                                                                value={axis}
+                                                                onChange={(e) => handleChangeAxis('AXIS', e.target.value)}
+                                                                className="add-input"
+                                                            />
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ADD</td>
+                                                        <td colSpan="2">
+                                                            <input
+                                                                type="number"
+                                                                value={add}
+                                                                onChange={(e) => handleChangeAdd('ADD', e.target.value)}
+                                                                className="add-input"
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button className='submit-lens-details' type='button' onClick={handleSubmit}>check out</button>
+                                <div className="price-info-popup">
+                                    <p>Sub Total</p>
+                                    <p>₹{product_price + selectedLens.price}</p>
+                                </div>
+                            </>
+                            )}
+
                         </div>
                     )}
                 </div>

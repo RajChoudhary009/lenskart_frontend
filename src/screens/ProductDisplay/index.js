@@ -3,6 +3,7 @@ import { GlobleInfo } from '../../App';
 import { Link } from 'react-router-dom';
 import { SERVER_API_URL } from '../../server/server';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import Header from "../../components/Header";
 import tdesign from '../../Assets/images/tdesign_cart.png';
 import "./index.css";
@@ -16,6 +17,7 @@ const frameShapes = [
 const genders = ['For Men', 'For Women', 'Unisex', 'For Kids'];
 
 const ProductDisplay = () => {
+  const { category } = useParams();
   const { getProductCount } = useContext(GlobleInfo);
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -23,58 +25,111 @@ const ProductDisplay = () => {
   const [selectedVendor, setSelectedVendor] = useState('All');
   const [selectedFrame, setSelectedFrame] = useState([]);
   const [selectedGender, setSelectedGender] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 6;
 
-  // Fetch products from API on component mount
+
+  console.log("category_test", category)
+
+  // Fetch products from API
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${SERVER_API_URL}/product`);
-        setAllProducts(response.data.result);
-        setFilteredProducts(response.data.result);
-        console.log("first", response.data.result)
+        const products = response.data.result;
+        setAllProducts(products);
+
+        // Apply initial filter based on category (useParams)
+        const initialFiltered = filterByCategory(products, category);
+        setFilteredProducts(initialFiltered);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
     fetchData();
-  }, []);
+  }, [category]);
+
+  // Filter products by lens_type or frem_type
+  const filterByCategory = (products, category) => {
+    if (!category || category.toLowerCase() === 'both') return products;
+
+    const filtered = products.filter(
+      (product) =>
+        (product.lens_type && product.lens_type.toLowerCase() === category.toLowerCase()) ||
+        (product.frem_type && product.frem_type.toLowerCase() === category.toLowerCase())
+    );
+    console.log("filtered", filtered)
+    // If no products match, return all products
+    return filtered.length > 0 ? filtered : products;
+  };
+  
+  
 
   // Filter products whenever any filter criteria changes
   useEffect(() => {
     const filterProducts = () => {
-      let filtered = allProducts;
-  
+      let filtered = filterByCategory(allProducts, category);
+
       if (selectedCategory !== 'Both') {
         filtered = filtered.filter(
           (product) => product.lens_type && product.lens_type.toLowerCase() === selectedCategory.toLowerCase()
         );
       }
-  
+
       if (selectedVendor !== 'All') {
         filtered = filtered.filter(
           (product) => product.vendor && product.vendor.toLowerCase() === selectedVendor.toLowerCase()
         );
       }
-  
+
       if (selectedFrame.length > 0) {
         filtered = filtered.filter(
           (product) => product.frem_type && selectedFrame.map((frame) => frame.toLowerCase()).includes(product.frem_type.toLowerCase())
         );
       }
-  
+
       if (selectedGender.length > 0) {
         filtered = filtered.filter(
           (product) => product.gender && selectedGender.map((gender) => gender.toLowerCase()).includes(product.gender.toLowerCase())
         );
       }
-  
-      setFilteredProducts(filtered);
+
+      // If no products match after filtering, return all products
+      setFilteredProducts(filtered.length > 0 ? filtered : allProducts);
+      setCurrentPage(1); // Reset to the first page when filters change
     };
-  
+
     filterProducts();
-  }, [selectedCategory, selectedVendor, selectedFrame, selectedGender, allProducts]);
-  
-  
+  }, [selectedCategory, selectedVendor, selectedFrame, selectedGender, allProducts, category]);
+
+  const addToCart = (item) => {
+    // Get existing cart items from local storage
+    const existingCartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Check if the item already exists in the cart
+    const itemIndex = existingCartItems.findIndex(cartItem => cartItem.id === item.id);
+
+    if (itemIndex !== -1) {
+      // If the item exists, ensure quantity is a number and increase it
+      existingCartItems[itemIndex].quantity = Number(existingCartItems[itemIndex].quantity) || 1;
+      existingCartItems[itemIndex].quantity += 1;
+    } else {
+      // If the item doesn't exist, add it with an initial quantity of 1
+      item.quantity = 1;
+      existingCartItems.push(item);
+    }
+
+    // Update local storage with the modified cart
+    localStorage.setItem('cart', JSON.stringify(existingCartItems));
+
+    // Get the count of unique items in the cart
+    const uniqueItemCount = existingCartItems.length;
+
+    alert(`${item.product_title} added to cart successfully!`);
+
+    // Update product count in the global state
+    getProductCount(uniqueItemCount);
+  };
 
   const handleFrameChange = (frame) => {
     setSelectedFrame((prev) =>
@@ -93,6 +148,24 @@ const ProductDisplay = () => {
     setSelectedVendor('All');
     setSelectedFrame([]);
     setSelectedGender([]);
+  };
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
   };
 
   return (
@@ -171,38 +244,91 @@ const ProductDisplay = () => {
 
           {/* Product Grid Section */}
           <div className="product-grid">
-            {filteredProducts.map((product, index) => (
-              <div key={index} className="product-card">
-                <Link to={`/product-item/${product.product_id}`}>
-                  <img className='carousel-image2' src={`${SERVER_API_URL}/${product?.product_thumnail_img}`} alt={`ImageItem ${product.product_id + 1}`} />
-                </Link>
-                <div className="product-info">
-                  <h4 className="product-hilight">{product.product_title}</h4>
-                  <h4 className="product-title">{product.highlights}</h4>
-                  <p className="product-price">₹{product.product_price}/-</p>
-                  <div className="button-add-to-cart">
-                    <div className="product-attributes">
-                      <p className="product-attribute">
-                        <strong>Color:</strong>
-                        <span className="product-color" style={{ backgroundColor: product.color }}></span> {product.color}
-                      </p>
-                      <p className="product-attribute">
-                        <strong>Material:</strong> {product.material}
-                      </p>
-                    </div>
-                    <button className="cart-btn"><img src={tdesign} alt="tdesign" /></button>
+  {
+    currentProducts.map((product, index) => {
+      let colors = [];
+
+      // Safely parse the color field and ensure it's an array
+      try {
+        const parsedColor = product.color ? JSON.parse(product.color) : [];
+        colors = Array.isArray(parsedColor) ? parsedColor : [];
+      } catch (error) {
+        console.error(`Failed to parse color for product ID ${product.product_id}:`, error);
+        colors = []; // Default to an empty array if parsing fails
+      }
+
+      return (
+        <div key={index} className="product-card">
+          <Link to={`/product-item/${product.product_id}`}>
+            <img className="carousel-image2" src={`${SERVER_API_URL}/${product?.product_thumnail_img}`} alt={`ImageItem ${product.product_id + 1}`} />
+          </Link>
+          <div className="product-info">
+            {product.count_in_stock === 0 && (
+              <h4 className='out-of-stock'>Out of stock</h4>
+            )}
+            <h4 className="product-hilight">{product.product_title}</h4>
+            <h4 className="product-title">{product.highlights}</h4>
+            <p className="product-price">₹{(product.product_price - (product.product_price * product.discount / 100)).toFixed(0)}/-</p>
+            <div className="button-add-to-cart">
+              <div className="product-attributes">
+                <p className="product-attribute">
+                  <strong>Color:</strong>
+                  <div className="color-options">
+                    {
+                      colors.length > 0 ? (
+                        colors.map((colorObj, colorIndex) => {
+                          const [colorName, colorCode] = Object.entries(colorObj)[0]; // Extract color name and code
+                          return (
+                            <span
+                              key={colorIndex}
+                              className="color-box"
+                              title={colorName}
+                              style={{
+                                backgroundColor: colorCode,
+                                display: 'inline-block',
+                                width: '30px',
+                                height: '16px',
+                                borderRadius: '5px',
+                                margin: '0 5px',
+                                border: '1px solid #ddd',
+                                cursor: 'pointer'
+                              }}
+                            ></span>
+                          );
+                        })
+                      ) : (
+                        <span>No Colors Available</span>
+                      )
+                    }
                   </div>
-                </div>
+                </p>
+                <p className="product-attribute">
+                  <strong>Material:</strong> {product.material}
+                </p>
               </div>
-            ))}
+              <button className="cart-btn" onClick={() => addToCart(product)}>
+                <img src={tdesign} alt="tdesign" />
+              </button>
+            </div>
           </div>
+        </div>
+      );
+    })
+  }
+</div>
+
+
         </div>
 
         {/* Pagination Section */}
         <div className='pagination-main-container'>
           <div className="pagination">
-            <button className="prev-btn">Prev</button>
-            <button className="next-btn">Next</button>
+            <button className="prev-btn" onClick={handlePrevPage} disabled={currentPage === 1}>
+              Prev
+            </button>
+            <button className="next-btn" onClick={handleNextPage} disabled={currentPage === totalPages}>
+              Next
+            </button>
           </div>
         </div>
       </div>
@@ -212,185 +338,3 @@ const ProductDisplay = () => {
 
 export default ProductDisplay;
 
-
-// import React, { useEffect, useState, useContext } from 'react';
-// import { GlobleInfo } from '../../App';
-// import { Link } from 'react-router-dom';
-// import axios from 'axios';
-// import Header from '../../components/Header';
-// import './index.css';
-
-// const ProductDisplay = () => {
-//     const {getProductCount} = useContext(GlobleInfo)
-
-//     const [updatedProducts, setUpdatedProducts] = useState([]);
-//     const [filteredProducts, setFilteredProducts] = useState([]);
-//     const [selectedCategory, setSelectedCategory] = useState('Both');
-//     const [selectedVendor, setSelectedVendor] = useState('All');
-
-//     // Fetch products from API
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             try {
-//                 const response2 = await axios.get('http://localhost:8000/product');
-//                 // console.log("response2", response2)
-//                 setUpdatedProducts(response2.data.result);
-//                 setFilteredProducts(response2.data.result); // Initialize filteredProducts with all products
-//             } catch (error) {
-//                 console.error('Error fetching products:', error);
-//             }
-//         };
-//         fetchData();
-//     }, []);
-
-//     const addToCart = (item) => {
-//         // Get existing cart items from local storage
-//         const existingCartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    
-//         // Add the new item to the cart
-//         const updatedCart = [...existingCartItems, item];
-//         localStorage.setItem('cart', JSON.stringify(updatedCart));
-    
-//         // Get the new length of the cart and update the product count
-//         const newLength = updatedCart.length;
-//         alert(`${item.product_title} added to cart successfully!`);
-        
-//         // Update product count in the global state
-//         getProductCount(newLength); // Update with the new cart length
-//     };
-    
-   
-//     // Handle filtering based on category and vendor
-//     const filterProducts = () => {
-//         let filtered = updatedProducts;
-
-//         if (selectedCategory !== 'Both') {
-//             filtered = filtered.filter(product =>
-//                 product.product_categories && product.product_categories.toLowerCase().includes(selectedCategory.toLowerCase())
-//             );
-//         }
-//         if (selectedVendor !== 'All') {
-//             filtered = filtered.filter(product =>
-//                 product.brand === selectedVendor
-//             );
-//         }
-//         setFilteredProducts(filtered);
-//     };
-
-//     // Apply filters when selection changes
-//     useEffect(() => {
-//         filterProducts();
-//     }, [selectedCategory, selectedVendor, updatedProducts]);
-
-//     return (
-//         <>
-//             <Header />
-//             <div className="product-display-bg-container">
-//                 <div className="product-display-home-container">
-//                     <img
-//                         className="banner-top-image"
-//                         src="https://images.unsplash.com/photo-1677761294200-64f1cb4fc69e?q=80&w=2063&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-//                         alt="top-banner"
-//                     />
-//                     <h1 className='all-product-text'>All Products</h1>
-//                     <hr className='hr-line' />
-//                     <div className='product-main-container'>
-//                         <div className="filter-container">
-//                             <h1 className="filters-title">Filters</h1>
-//                             <div className="filter-buttons">
-//                                 <button className="apply-btn">Apply</button>
-//                                 <button className="reset-btn" onClick={() => {
-//                                     setSelectedCategory('Both');
-//                                     setSelectedVendor('All');
-//                                 }}>Reset</button>
-//                             </div>
-
-//                             <div className="filter-group">
-//                                 <h3>Product Category</h3>
-//                                 <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="filter-select">
-//                                     <option value="Both">Both</option>
-//                                     <option value="Sunglasses">Sunglasses</option>
-//                                     <option value="EyeGlasses">EyeGlasses</option>
-//                                 </select>
-//                             </div>
-
-//                             <div className="filter-group">
-//                                 <h3>Vendor</h3>
-//                                 <label>
-//                                     <input
-//                                         type="checkbox"
-//                                         value="All"
-//                                         onChange={() => setSelectedVendor('All')}
-//                                         checked={selectedVendor === 'All'}
-//                                     /> All
-//                                 </label>
-//                                 <label>
-//                                     <input
-//                                         type="checkbox"
-//                                         value="Ben Hunt"
-//                                         onChange={() => setSelectedVendor('Ben Hunt')}
-//                                         checked={selectedVendor === 'Ben Hunt'}
-//                                     /> Ben Hunt
-//                                 </label>
-//                                 <label>
-//                                     <input
-//                                         type="checkbox"
-//                                         value="DCEYEWR"
-//                                         onChange={() => setSelectedVendor('DCEYEWR')}
-//                                     /> DCEYEWR
-//                                 </label>
-//                                 <label>
-//                                     <input
-//                                         type="checkbox"
-//                                         value="Wolf Eye"
-//                                         onChange={() => setSelectedVendor('Wolf Eye')}
-//                                     /> Wolf Eye
-//                                 </label>
-//                             </div>
-
-//                             <div className="filter-group">
-//                                 <h3>Frame Shape</h3>
-//                                 <label>
-//                                     <input type="checkbox" value="Aviator" /> Aviator
-//                                 </label>
-//                                 <label>
-//                                     <input type="checkbox" value="Cats Eye" /> Cats Eye
-//                                 </label>
-//                                 <label>
-//                                     <input type="checkbox" value="Rectangle" /> Rectangle
-//                                 </label>
-//                             </div>
-//                         </div>
-
-//                         <div className='products-container'>
-//                             {filteredProducts.map(product => (
-//                                 <div key={product.id} className='product-card'>
-//                                     <Link to={`/product-item/${product.product_id}`}>
-//                                         <img className='carousel-image2' src={`http://localhost:8000/${product?.product_thumnail_img}`} alt={`ImageItem ${product.product_id + 1}`} />
-//                                     </Link>
-//                                     <div className="product-info">
-//                                         <h4 className="product-brand">{product.product_title}</h4>
-//                                         <p className="product-name">{product.highlights}</p>
-//                                         <p className="product-price">{product.product_price}</p>
-//                                         <div className="product-attributes">
-//                                             <p className="product-attribute">
-//                                                 <strong>Color:</strong>
-//                                                 <span className="product-color" style={{ backgroundColor: product.color }}></span> {product.color}
-//                                             </p>
-//                                             <p className="product-attribute">
-//                                                 <strong>Material:</strong> {product.material}
-//                                             </p>
-//                                         </div>
-//                                     </div>
-//                                     <button className="cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
-//                                 </div>
-//                             ))}
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//         </>
-//     );
-// };
-
-// export default ProductDisplay;

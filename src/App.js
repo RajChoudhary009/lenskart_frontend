@@ -7,6 +7,7 @@ import Login from "./screens/Login";
 import Otpvarify from "./screens/Otpvarify";
 import LensPricing from './screens/LensPricing'
 import Testing from './screens/Testing'
+import ChekOutPage from './screens/ChekOutPage'
 
 import "./App.css";
 
@@ -14,6 +15,7 @@ export const GlobleInfo = createContext();
 
 function App() {
   const [productCount, setProductCount] = useState("0");
+  const [checkoutData, setCheckoutData] = useState({}); // Store checkout data
 
   const getProductCount = (count) => {
     setProductCount(count);
@@ -49,11 +51,19 @@ function App() {
     };
   }, []);
 
+  // Save checkout data
+  const saveCheckoutData = (data) => {
+    setCheckoutData(data);
+    console.log("Checkout Data Saved:", data); // Debugging purposes
+  };
+
   return (
     <GlobleInfo.Provider
       value={{
         getProductCount,
-        productCount
+        productCount,
+        saveCheckoutData, // Pass this function to the context
+        checkoutData, // Provide the checkout data
       }}>
       <BrowserRouter>
         <Routes>
@@ -62,8 +72,9 @@ function App() {
           <Route exact path="/otp-varify" element={<Otpvarify />} />
           <Route exact path="/" element={<Home />} />
           <Route exact path="/testing" element={<Testing />} />
-          <Route exact path="/product-display" element={<ProductDisplay />} />
+          <Route exact path="/product-display/:category" element={<ProductDisplay />} />
           <Route exact path="/product-item/:product_id" element={<ProductDetails />} />
+          <Route path="/ChekOutPage" element={<ChekOutPage />} />
         </Routes>
       </BrowserRouter>
     </GlobleInfo.Provider>
