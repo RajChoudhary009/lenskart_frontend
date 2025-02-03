@@ -75,6 +75,7 @@ function App() {
           <Route exact path="/product-display/:category" element={<ProductDisplay />} />
           <Route exact path="/product-item/:product_id" element={<ProductDetails />} />
           <Route path="/ChekOutPage" element={<ChekOutPage />} />
+          
         </Routes>
       </BrowserRouter>
     </GlobleInfo.Provider>

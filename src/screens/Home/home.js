@@ -26,6 +26,20 @@ import stayAheadInStyleBanner from '../../Assets/images/stay-ahead-in-style-bann
 import Blinkers from '../../Assets/images/Blinkers.webp'
 import EyePoppin from '../../Assets/images/EyePoppin.webp'
 
+// import prog11 from '../../Assets/images/prog11.webp'
+// import a2 from '../../Assets/images/a2.webp'
+// import b2 from '../../Assets/images/b2.webp'
+// import d2 from '../../Assets/images/d2.webp'
+// import d from '../../Assets/images/d.webp'
+// import e2 from '../../Assets/images/e2.webp'
+
+import prog11 from '../../Assets/images/sunglasses1.png'
+import a2 from '../../Assets/images/sunglasses2.jpg'
+import b2 from '../../Assets/images/sunglasses3.png'
+import d2 from '../../Assets/images/sunglasses4.png'
+import d from '../../Assets/images/sunglasses5.png'
+import e2 from '../../Assets/images/sunglasses6.jpg'
+
 import './home.css';
 
 const Home = () => {
@@ -34,6 +48,89 @@ const Home = () => {
       <Header />
       <div className='home-bg-container'>
         <div className='home-main-container'>
+          {/* top card */}
+          <div className='card-container-main'>
+            <div class="card-container">
+              <div class="card">
+                <img src={prog11} alt="Eyeglasses" class="card-image" />
+                <h3 class="card-title">Power Glass</h3>
+                <div class="card-content">
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-container">
+              <div class="card">
+                <img src={b2} alt="Eyeglasses" class="card-image" />
+                <h3 class="card-title">Power Sunglasses</h3>
+                <div class="card-content">
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-container">
+              <div class="card">
+                <img src={d} alt="Eyeglasses" class="card-image" />
+                <h3 class="card-title">Screen saver</h3>
+
+                <div class="card-content">
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-container">
+              <div class="card">
+                <img src={a2} alt="Eyeglasses" class="card-image" />
+                <h3 class="card-title">Sunglasses</h3>
+                <div class="card-content">
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-container">
+              <div class="card">
+                <img src={d2} alt="Eyeglasses" class="card-image" />
+                <h3 class="card-title">Contact Lenses</h3>
+                <div class="card-content">
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                </div>
+              </div>
+            </div>            
+
+            <div class="card-container">
+              <div class="card">
+                <img src={e2} alt="Eyeglasses" class="card-image" />
+                <h3 class="card-title">Progressive lenses</h3>
+                <div class="card-content">
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                  <p>Air Light-Weight Powered Lenses</p>
+                  <p>Starting from ₹2000</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
           {/* Top Banners */}
           <Link to="#">
             <div className='your-perfect-pair'>
@@ -76,7 +173,7 @@ const Home = () => {
               </div>
               <div className="category-item">
                 <Link to={`/product-display/${"Wayfarer"}`}><img src={wayfarerVector} alt="Wayfarer" className="category-icon" /></Link>
-                <p>Wayfarer</p>
+                <p>Oval</p>
               </div>
             </div>
           </div>
@@ -312,7 +409,7 @@ const Home = () => {
             </div>
             <Link to={`/product-display/${"Square"}`}> <img src={EyePoppin} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
-          
+
           {/* Eyeglasses-container */}
           <div className='Eyeglasses-container'>
             <div className='Eyeglasses-container-main'>

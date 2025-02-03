@@ -53,10 +53,12 @@
   color: #333;
   text-decoration: none;
   cursor: pointer;
+  font-weight: 500;
 }
 
 .nav-link:hover {
-  color: #00bfff;
+  color: #979b9c;
+ 
 }
 
 @media (max-width: 768px) {
@@ -91,7 +93,8 @@
 .logo-section {
   display: flex;
   align-items: center;
-  width: 30%;
+  width: auto;
+  /* border: 1px solid red; */
 }
 
 .logo-icon {
@@ -157,3 +160,236 @@
   }
 }
 
+/* Search Popup Container */
+
+.search-button {
+  width: 100%;
+}
+
+/* menu item popup */
+.item-popup {
+  position: fixed;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  height: 70vh;
+  padding: 20px;
+}
+
+/* Popup Content */
+.popup-containt-heading {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.popup-content ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.popup-content ul li {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #555;
+}
+
+/* Close Button */
+.close-button {
+  padding: 10px 20px;
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  align-self: flex-end;
+}
+
+.close-button:hover {
+  background-color: #d13c3c;
+}
+
+
+/* power glassesb */
+
+.power-glasses-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+}
+
+.category-column,
+.brands-column,
+.top-picks-column,
+.frame-shapes-column,
+.collection-column {
+  flex: 1;
+  margin: 0 10px;
+}
+
+h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: var(--primary-primary-main);
+  text-transform: capitalize;
+  font-family: var(--font-lksans-bold);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.brand-item,
+.pick-item,
+.frame-shape-item,
+.collection-item {
+  padding: 10px 0;
+  /* border-bottom: 1px solid #eee; */
+  font-size: 12px;
+  line-height: 20px;
+  font-family: var(--font-lksans-regular);
+  cursor: var(--pointer);
+  color: gba(0, 0, 66, 0.5);
+}
+
+.category-item1 span {
+  color: var(--primary-primary-main);
+  height: auto;
+  line-height: 18px;
+  font-family: var(--font-lksans-regular);
+  font-weight: 500 !important;
+  /* color: red; */
+}
+
+.category-item1 span:first-child {
+  font-weight: bold;
+}
+
+.category-item1:hover,
+.brand-item:hover,
+.pick-item:hover,
+.frame-shape-item:hover,
+.collection-item:hover {
+  background-color: #f0f0f0;
+  /* color: #007bff; */
+  color: black;
+  /* padding: 1px; */
+}
+
+.collection-item {
+  font-style: italic;
+}
+
+.category-group {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.category-heading {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-right: 20px;
+  color: #333;
+  width: 120px;
+  padding-top: 20px;
+}
+
+.cetogory-group-item {
+  display: flex;
+  flex-direction: column;
+  height: 100px;
+}
+
+.category-item1 {
+  padding: 5px 0;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+}
+
+.category-image {
+  width: 60px;
+  height: 60px;
+  margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 30px;
+}
+
+/* trending search */
+/* Search Input */
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(0, 0, 66, 0.5);
+  color: rgba(0, 0, 66, 0.5);
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-input:focus {
+  /* border-color: rgba(0, 0, 66, 0.5); */
+  box-shadow: 0 0 5px rgba(203, 214, 226, 0.3);
+}
+
+/* Dropdown */
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.search-dropdown-header {
+  padding: 10px;
+  font-weight: bold;
+  color: #444;
+  border-bottom: 1px solid #ddd;
+  background: #f8f9fa;
+}
+
+.search-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.search-dropdown li {
+  font-size: 14px;
+  color: rgba(0, 0, 66, 0.5);
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.search-dropdown li:hover {
+  background: #f0f0f0;
+}
