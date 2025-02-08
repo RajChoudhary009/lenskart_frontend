@@ -6,6 +6,8 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Header from "../../components/Header";
 import { LuArrowDownUp } from "react-icons/lu";
+import { CiHeart } from "react-icons/ci";
+import { FaHeart } from "react-icons/fa";
 import tdesign from '../../Assets/images/tdesign_cart.png';
 
 import Aviator from '../../Assets/images/Aviator.png'
@@ -74,6 +76,8 @@ const ProductDisplay = () => {
   const { getProductCount } = useContext(GlobleInfo);
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  // State to track hovered images
+  const [hoveredImages, setHoveredImages] = useState({});
 
   const [selectedFrameShape, setSelectedFrameShape] = useState([]);
   const [selectedFrameType, setSelectedFrameType] = useState([]);
@@ -83,11 +87,28 @@ const ProductDisplay = () => {
   const [selectedFrameColor, setSelectedFrameColor] = useState([]);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(5000);
-  // const [sortedProducts, setSortedProducts] = useState([]);
   const [sortOption, setSortOption] = useState('Price: High to Low');
+  const [wishlistItems, setWishlistItems] = useState(() => {
+    return JSON.parse(localStorage.getItem('wishlist')) || [];
+  });
   const [hoveredColor, setHoveredColor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 9;
+  
+
+  const handleMouseEnter = (productId, hoverImage) => {
+    setHoveredImages((prev) => ({
+      ...prev,
+      [productId]: hoverImage,
+    }));
+  };
+
+  const handleMouseLeave = (productId, defaultImage) => {
+    setHoveredImages((prev) => ({
+      ...prev,
+      [productId]: defaultImage,
+    }));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -182,6 +203,35 @@ const ProductDisplay = () => {
     getProductCount(uniqueItemCount);
   };
 
+  // const wishlist = (item) => {
+  //   const existingWishlistItems = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+  //   const itemIndex = existingWishlistItems.findIndex(wishlistItem => wishlistItem.id === item.id);
+
+  //   if (itemIndex !== -1) {
+  //     alert(`${item.product_title} is already in your wishlist!`);
+  //   } else {
+  //     // Add item to wishlist
+  //     existingWishlistItems.push(item);
+  //     localStorage.setItem('wishlist', JSON.stringify(existingWishlistItems));
+  //     alert(`${item.product_title} added to wishlist successfully!`);
+  //   }
+  // }
+
+  const toggleWishlist = (product) => {
+    let updatedWishlist = [...wishlistItems];
+    const index = updatedWishlist.findIndex(item => item.product_id === product.product_id);
+
+    if (index !== -1) {
+      updatedWishlist.splice(index, 1); // Remove if exists
+    } else {
+      updatedWishlist.push(product); // Add if not exists
+    }
+
+    localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
+    setWishlistItems(updatedWishlist); // Update state
+  };
+
   const handleFrameTypeChange = (framtype) => {
     setSelectedFrameType((prev) =>
       prev.includes(framtype) ? prev.filter((f) => f !== framtype) : [...prev, framtype]
@@ -263,7 +313,7 @@ const ProductDisplay = () => {
   useEffect(() => {
     const filterAndSortProducts = () => {
       let filteredProducts = filterByCategory(allProducts, category); // Start with category-based filtering
-  
+
       // **Filter by Frame Type**
       if (selectedFrameType.length > 0) {
         filteredProducts = filteredProducts.filter((product) =>
@@ -272,7 +322,7 @@ const ProductDisplay = () => {
           )
         );
       }
-  
+
       // **Filter by Frame Shape**
       if (selectedFrameShape.length > 0) {
         filteredProducts = filteredProducts.filter((product) =>
@@ -281,7 +331,7 @@ const ProductDisplay = () => {
           )
         );
       }
-  
+
       // **Filter by Gender**
       if (selectedGender.length > 0) {
         filteredProducts = filteredProducts.filter((product) =>
@@ -290,7 +340,7 @@ const ProductDisplay = () => {
           )
         );
       }
-  
+
       // **Filter by Lens Color**
       if (selectedLensColor.length > 0) {
         filteredProducts = filteredProducts.filter((product) => {
@@ -305,7 +355,7 @@ const ProductDisplay = () => {
           }
         });
       }
-  
+
       // **Filter by Frame Color**
       if (selectedFrameColor.length > 0) {
         filteredProducts = filteredProducts.filter((product) => {
@@ -320,15 +370,15 @@ const ProductDisplay = () => {
           }
         });
       }
-  
+
       // **Filter by Price Range**
       filteredProducts = filteredProducts.filter((product) => {
         return product.product_price >= minPrice && product.product_price <= maxPrice;
       });
-  
+
       // **Sorting Logic**
       let sortedProducts = [...filteredProducts];
-  
+
       switch (sortOption) {
         case 'Price: High to Low':
           sortedProducts.sort((a, b) => (b.product_price - (b.product_price * b.discount / 100)) -
@@ -344,18 +394,18 @@ const ProductDisplay = () => {
         default:
           break;
       }
-  
+
       console.log("Final Sorted & Filtered Products:", sortedProducts);
       setFilteredProducts(sortedProducts.length > 0 ? sortedProducts : []);
       setCurrentPage(1);
     };
-  
+
     filterAndSortProducts();
   }, [selectedFrameType, selectedFrameShape, selectedGender, selectedFrameColor, minPrice, maxPrice, selectedLensColor, allProducts, category, sortOption]);
-  
-  
 
-  
+
+
+
   return (
     <>
       <Header />
@@ -374,8 +424,8 @@ const ProductDisplay = () => {
             </div> */}
 
             <div className="sort">
-            <LuArrowDownUp style={{color: "#009688", fontSize:"14px"}}/>
-              <span className='active' style={{fontSize:"13px"}}>SORT BY:</span>
+              <LuArrowDownUp style={{ color: "#009688", fontSize: "14px" }} />
+              <span className='active' style={{ fontSize: "13px" }}>SORT BY:</span>
               <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
                 <option>Price: High to Low</option>
                 <option>Price: Low to High</option>
@@ -561,6 +611,10 @@ const ProductDisplay = () => {
           <div className="product-grid">
             {
               currentProducts.map((product, index) => {
+                const defaultImage = product.product_thumnail_img;
+                const hoverImage = product.product_all_img?.[0] || defaultImage;
+                const imageSrc = hoveredImages[product.product_id] || defaultImage;
+
                 let colors = [];
                 // Safely parse the color field and ensure it's an array
                 try {
@@ -573,8 +627,24 @@ const ProductDisplay = () => {
 
                 return (
                   <div key={index} className="product-card">
-                    <Link to={`/product-item/${product.product_id}`}>
+                    <div className='red-heart-container'>
+                      {wishlistItems.some(item => item.product_id === product.product_id) ? (
+                        <FaHeart className='hert-icon red-background' onClick={() => toggleWishlist(product)} />
+                      ) : (
+                        <CiHeart className='hert-icon' onClick={() => toggleWishlist(product)} />
+                      )}
+                    </div>
+                    {/* <Link to={`/product-item/${product.product_id}`}>
                       <img className="carousel-image2" src={`${SERVER_API_URL}/${product?.product_thumnail_img}`} alt={`ImageItem ${product.product_id + 1}`} />
+                    </Link> */}
+                    <Link to={`/product-item/${product.product_id}`}>
+                    <img
+                      className="carousel-image2"
+                      src={`${SERVER_API_URL}/${imageSrc}`}
+                      alt={`ImageItem ${product.product_id}`}
+                      onMouseEnter={() => handleMouseEnter(product.product_id, hoverImage)}
+                      onMouseLeave={() => handleMouseLeave(product.product_id, defaultImage)}
+                    />
                     </Link>
                     <div className="product-info">
                       {product.count_in_stock === 0 && (
@@ -617,7 +687,7 @@ const ProductDisplay = () => {
                             </div>
                           </p>
                           <p className="product-attribute">
-                            <strong>Material:</strong> {product.material}
+                            <strong>Frame material:</strong> {product.material}
                           </p>
                         </div>
                         <button className="cart-btn" onClick={() => addToCart(product)}>

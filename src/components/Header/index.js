@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { SERVER_API_URL } from '../../server/server';
 import { GlobleInfo } from '../../App';
 import { FaBars, FaSearch, FaShoppingCart } from 'react-icons/fa'; // Importing icons
 import dceyewrLogo from '../../Assets/images/dceyewr-logo-no-text.png';
@@ -230,6 +231,16 @@ const Header = () => {
   const [popupContent, setPopupContent] = useState('');   // State for popup content
   const [query, setQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+
+  // Load wishlist items from localStorage when the popup opens
+  useEffect(() => {
+    if (isWishlistOpen) {
+      const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      setWishlistItems(storedWishlist);
+    }
+  }, [isWishlistOpen]);
 
   const togglePopup = (content) => {
     setPopupContent(content);  // Set the content for the popup
@@ -269,20 +280,22 @@ const Header = () => {
         {/* Center - Logo */}
         <div className="logo-section">
           <img src={dceyewrLogo} className="logo-icon" alt="Logo" />
+          <span
+          style={{paddingBottom:"8px"}}>Eye zones</span> 
         </div>
 
         <div className="search-container">
           {/* <div className='search-home-main'> */}
-            <input
-              type="text"
-              placeholder="What are you looking for?"
-              className="search-input"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => setShowDropdown(true)}
-              onBlur={() => setTimeout(() => setShowDropdown(false), 2000)}
-            />
-            {/* <FaSearch className="icon" onClick={handleSearch} />
+          <input
+            type="text"
+            placeholder="What are you looking for?"
+            className="search-input"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setShowDropdown(true)}
+            onBlur={() => setTimeout(() => setShowDropdown(false), 2000)}
+          />
+          {/* <FaSearch className="icon" onClick={handleSearch} />
           </div> */}
 
           {showDropdown && (
@@ -303,7 +316,7 @@ const Header = () => {
         <div className="right-section">
           {/* <FaSearch className="icon" onClick={toggleSearchPopup} /> Clickable search icon */}
           <span className="nav-link">Track Order</span>
-          <span className="nav-link">Wishlist</span>
+          <span className="nav-link" onClick={() => setIsWishlistOpen(true)}>Wishlist</span>
 
           <div className="cart-container">
             <FaShoppingCart className="icon" />
@@ -312,46 +325,29 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Search Popup */}
-      {/* {isSearchOpen && (
-        <div className="search-popup">
-          <div className="search-input-container">
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search Product"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button className="search-button" onClick={handleSearch}>
-              <FaSearch />
-            </button>
+     {/* Wishlist Popup */}
+     {isWishlistOpen && (
+        <div className="wishlist-popup">
+          <div className="wishlist-header">
+            <h3>My Wishlist</h3>
+            <button className="close-btn" onClick={() => setIsWishlistOpen(false)}>X</button>
           </div>
-
-          <div className="search-type-container">
-            <label className="search-type-label">Search Type:</label>
-            <input
-              type="radio"
-              id="relative"
-              name="searchType"
-              value="relative"
-              checked={searchType === 'relative'}
-              onChange={(e) => setSearchType(e.target.value)}
-            />
-            <label htmlFor="relative">Relative</label>
-
-            <input
-              type="radio"
-              id="exact"
-              name="searchType"
-              value="exact"
-              checked={searchType === 'exact'}
-              onChange={(e) => setSearchType(e.target.value)}
-            />
-            <label htmlFor="exact">Exact Match</label>
+          <div className="wishlist-content">
+            {wishlistItems.length > 0 ? (
+              wishlistItems.map((item) => (
+                <div key={item.id} className="wishlist-item">
+                  <img src={`${SERVER_API_URL}/${item?.product_thumnail_img}`} alt={item.product_title} />
+                  <p>{item.product_title}</p>
+                  <p>₹{item.product_price}</p>
+                </div>
+              ))
+            ) : (
+              <p>No items in wishlist</p>
+            )}
           </div>
         </div>
-      )} */}
+      )}
+
 
       {/* Popup */}
       {isPopupOpen && (

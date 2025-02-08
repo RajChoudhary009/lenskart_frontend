@@ -66,6 +66,7 @@
 // export default Footer;
 
 import React from "react";
+import { FloatingWhatsApp } from 'react-floating-whatsapp'
 import "./index.css"; // Import the CSS file
 
 export default function Footer() {
@@ -117,16 +118,26 @@ export default function Footer() {
                 {/* App Download & Social Icons */}
                 <div className="footer-bottom">
                     <div className="footer-apps">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Google_Play_Store_badge_EN.svg" alt="Google Play" />
+                        <img
+                            src="https://static.lenskart.com/media/desktop/img/play-store.svg"
+                            alt="Google Play"
+                        />
                         <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="App Store" />
                     </div>
                     <p className="footer-text">Download Lenskart App to buy Eyeglasses, Sunglasses, and Contact Lenses</p>
                 </div>
 
+                <h1 style={{ color: "#2f78c4" }}>
+                    <FloatingWhatsApp
+                        phoneNumber="+91 76677 37337"
+                        accountName="Softgenics India Pvt. Ltd."
+                        allowClickAway
+                        notification
+                        notificationDelay={60000} // 1 minute
+                    />
+                </h1>
+
             </div>
-
-
-
 
             {/* Bottom Section */}
             <div className="footer-bottom-section">
