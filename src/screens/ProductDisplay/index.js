@@ -10,6 +10,8 @@ import { CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 // import { ImFire } from "react-icons/im";
 // import { SlFire } from "react-icons/sl";
+import { BsBagHeart } from "react-icons/bs";
+import { BsBagHeartFill } from "react-icons/bs";
 import tdesign from '../../Assets/images/tdesign_cart.png';
 
 import Aviator from '../../Assets/images/Aviator.png'
@@ -631,9 +633,9 @@ const ProductDisplay = () => {
                   <div key={index} className="product-card">
                     <div className='red-heart-container'>
                       {wishlistItems.some(item => item.product_id === product.product_id) ? (
-                        <FaHeart className='hert-icon red-background' onClick={() => toggleWishlist(product)} />
+                        <BsBagHeartFill className='hert-icon red-background' onClick={() => toggleWishlist(product)} />
                       ) : (
-                        <CiHeart className='hert-icon' onClick={() => toggleWishlist(product)} />
+                        <BsBagHeart className='hert-icon' onClick={() => toggleWishlist(product)} />
                       )}
                     </div>
                     {/* <Link to={`/product-item/${product.product_id}`}>

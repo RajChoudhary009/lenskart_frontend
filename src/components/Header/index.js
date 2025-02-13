@@ -3,9 +3,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { SERVER_API_URL } from '../../server/server';
 import { GlobleInfo } from '../../App';
 // import { FaShoppingCart } from 'react-icons/fa'; // Importing icons
-import { CiHeart } from "react-icons/ci";
+import { BsBagHeart } from "react-icons/bs";
+// import { CiHeart } from "react-icons/ci";
 import { FaHeart, FaShoppingCart, FaPhone } from "react-icons/fa";
-import { IoBagOutline } from "react-icons/io5";
+// import { IoBagOutline } from "react-icons/io5";
 import { ImFire } from "react-icons/im";
 import dceyewrLogo from '../../Assets/images/dceyewr-logo-no-text.png';
 import men_pic from '../../Assets/images/men_pic.webp'
@@ -308,12 +309,11 @@ const Header = () => {
             <Link className='login-sinup' to="/track-order">Track Order</Link>
             <Link className='login-sinup' to="/login">Sign In & Sign Up</Link>
 
-            <CiHeart className="icon" size={20} onClick={() => setIsWishlistOpen(true)} />
+            <BsBagHeart className="icon" size={20} style={{color:"#97bce3"}} onClick={() => setIsWishlistOpen(true)} />
             <span onClick={() => setIsWishlistOpen(true)}>Wishlist</span>
 
-
             <div className="cart-container">
-              <IoBagOutline className="icon" size={20} />
+              <FaShoppingCart className="icon" size={20} />
               <div className="cart-badge">{productCount}</div>
             </div>
             <span>Cart</span>

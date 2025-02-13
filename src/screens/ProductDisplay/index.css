@@ -221,12 +221,14 @@ select {
   right: 30px;
   top: 20px;
 }
-.red-background{
-  color: rgb(208, 11, 11);
-  /* color: #1930dc; */
-}
 .hert-icon{
   font-size: 23px;
+  color: #97bce3;
+}
+.red-background{
+  /* color: rgb(208, 11, 11); */
+  /* color: #1930dc; */
+  color: #009688;
 }
 
 .product-card:hover {
