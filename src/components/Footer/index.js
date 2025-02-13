@@ -74,13 +74,13 @@ export default function Footer() {
         <footer className="footer">
             {/* Top Section */}
             <div className="footer-top">
-                <h2 className="footer-title">Buy The Best Eyewear From Lenskart</h2>
+                <h2 className="footer-title">Buy The Best Eyewear From Eye zones</h2>
                 <p className="footer-description">
-                    Lenskart is the leading e-commerce portal for eyewear in India. It has revolutionized the eyewear industry with its
+                    Eye zones is the leading e-commerce portal for eyewear in India. It has revolutionized the eyewear industry with its
                     Omni-Channel approach, from offline stores to innovative technology for online shopping.
                 </p>
                 <p className="footer-description">
-                    A one-stop solution for purchasing eyewear and accessories, Lenskart delivers them at your doorstep with multiple
+                    A one-stop solution for purchasing eyewear and accessories, Eye zones delivers them at your doorstep with multiple
                     payment options. <span className="footer-link">Sunglasses</span> as well as <span className="footer-link">Eyeglasses</span>
                     are available for men and women in various styles. If you want to try <span className="footer-link">Contact Lenses</span>,
                     pick the best from our wide range.
@@ -104,7 +104,7 @@ export default function Footer() {
                             <li>We Are Hiring</li>
                             <li>Refer And Earn</li>
                             <li>About Us</li>
-                            <li>Lenskart Coupons</li>
+                            <li>Eye zones Coupons</li>
                         </ul>
                     </div>
                     <div className="footer-column">
@@ -124,18 +124,10 @@ export default function Footer() {
                         />
                         <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="App Store" />
                     </div>
-                    <p className="footer-text">Download Lenskart App to buy Eyeglasses, Sunglasses, and Contact Lenses</p>
+                    <p className="footer-text">Download Eye zones App to buy Eyeglasses, Sunglasses, and Contact Lenses</p>
                 </div>
 
-                <h1 style={{ color: "#2f78c4" }}>
-                    <FloatingWhatsApp
-                        phoneNumber="+91 76677 37337"
-                        accountName="Softgenics India Pvt. Ltd."
-                        allowClickAway
-                        notification
-                        notificationDelay={60000} // 1 minute
-                    />
-                </h1>
+               
 
             </div>
 
@@ -150,6 +142,15 @@ export default function Footer() {
                     <img src="https://cdn-icons-png.flaticon.com/512/124/124021.png" alt="Twitter" />
                     <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
                     <img src="https://cdn-icons-png.flaticon.com/512/1384/1384096.png" alt="Chat" />
+                    <h1 style={{ color: "#2f78c4" }}>
+                    <FloatingWhatsApp
+                        phoneNumber="+91 76677 37337"
+                        accountName="Softgenics India Pvt. Ltd."
+                        allowClickAway
+                        notification
+                        notificationDelay={60000} // 1 minute
+                    />
+                </h1>
                 </div>
             </div>
         </footer>

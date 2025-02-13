@@ -1,8 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { SERVER_API_URL } from '../../server/server';
 import { GlobleInfo } from '../../App';
-import { FaBars, FaSearch, FaShoppingCart } from 'react-icons/fa'; // Importing icons
+// import { FaShoppingCart } from 'react-icons/fa'; // Importing icons
+import { CiHeart } from "react-icons/ci";
+import { FaHeart, FaShoppingCart, FaPhone } from "react-icons/fa";
+import { IoBagOutline } from "react-icons/io5";
+import { ImFire } from "react-icons/im";
 import dceyewrLogo from '../../Assets/images/dceyewr-logo-no-text.png';
 import men_pic from '../../Assets/images/men_pic.webp'
 import women_pic from '../../Assets/images/women_pic.webp'
@@ -255,7 +259,97 @@ const Header = () => {
 
   return (
     <div className='header-bg-container'>
-      <header className="header-main-container">
+      <nav className="navbar">
+        <div className="navbar-top">
+          {/* Logo & Contact */}
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <div className="logo-container">
+              <img src={dceyewrLogo} alt="Lenskart" className="logo" />
+              <div className="contact">
+                {/* <span className='eyezone-text'>Eyezones</span> */}
+                <button className="btn-tryon" style={{ padding: "5px 8px", border: "none", borderRadius: "2px", fontWeight: "900" }}>EYE ZONES</button>
+                {/* <FaPhone className="icon" size={20} /> */}
+                {/* <span>99998 99998</span> */}
+              </div>
+            </div>
+          </Link>
+
+          {/* Search Bar */}
+          <div className="search-container">
+            {/* <div className='search-home-main'> */}
+            <input
+              type="text"
+              placeholder="What are you looking for?"
+              className="search-input"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => setShowDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDropdown(false), 2000)}
+            />
+            {/* <FaSearch className="icon" onClick={handleSearch} />
+          </div> */}
+
+            {showDropdown && (
+              <div className="search-dropdown">
+                <div className="search-dropdown-header">Trending Search</div>
+                <ul>
+                  {trendingSearches.map((item, index) => (
+                    <li key={index} onMouseDown={() => setQuery(item)}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Right Icons */}
+          <div className="user-actions">
+            <Link className='login-sinup' to="/track-order">Track Order</Link>
+            <Link className='login-sinup' to="/login">Sign In & Sign Up</Link>
+
+            <CiHeart className="icon" size={20} onClick={() => setIsWishlistOpen(true)} />
+            <span onClick={() => setIsWishlistOpen(true)}>Wishlist</span>
+
+
+            <div className="cart-container">
+              <IoBagOutline className="icon" size={20} />
+              <div className="cart-badge">{productCount}</div>
+            </div>
+            <span>Cart</span>
+          </div>
+        </div>
+
+        {/* Navigation Links */}
+        <div className='navbar-main-bottom'>
+          <div className="navbar-bottom">
+            <span className="nav-link" onClick={() => togglePopup('Power Glasses')}>
+              Power Glasses
+            </span>
+            <span className="nav-link" onClick={() => togglePopup('Sunglasses')}>
+              Sunglasses
+            </span>
+            <span className="nav-link" onClick={() => togglePopup('Screen Saver')}>
+              Screen Saver
+            </span>
+            <span className="nav-link" onClick={() => togglePopup('Contact Lenses')}>
+              Contact Lenses
+            </span>
+            <span className="nav-link nav-link-modifiy" onClick={() => togglePopup('Kids Glasses')}>
+              Kids Glasses
+            </span>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="navbar-buttons">
+            <button className="btn-tryon1"> 3D TRY ON</button>
+            <button className="btn-blu">BLU</button>
+            <button className="btn-gold">GOLD MAX</button>
+          </div>
+        </div>
+      </nav>
+
+      <header className="header-main-container" style={{ display: "none" }}>
         {/* Left - Menu Icon */}
         <div className="left-section">
           {/* <FaBars className="menu-icon" /> */}
@@ -278,11 +372,13 @@ const Header = () => {
         </div>
 
         {/* Center - Logo */}
-        <div className="logo-section">
-          <img src={dceyewrLogo} className="logo-icon" alt="Logo" />
-          <span
-          style={{paddingBottom:"8px"}}>Eye zones</span> 
-        </div>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <div className="logo-section">
+            <img src={dceyewrLogo} className="logo-icon" alt="Logo" />
+            <span
+              style={{ paddingBottom: "8px" }}>Eye zones</span>
+          </div>
+        </Link>
 
         <div className="search-container">
           {/* <div className='search-home-main'> */}
@@ -316,7 +412,10 @@ const Header = () => {
         <div className="right-section">
           {/* <FaSearch className="icon" onClick={toggleSearchPopup} /> Clickable search icon */}
           <span className="nav-link">Track Order</span>
-          <span className="nav-link" onClick={() => setIsWishlistOpen(true)}>Wishlist</span>
+          <span style={{ paddingTop: "0px" }} onClick={() => setIsWishlistOpen(true)}><ImFire color='#1930dc' size={23} /></span>
+          <span className="nav-link" onClick={() => setIsWishlistOpen(true)}>
+            Wishlist
+          </span>
 
           <div className="cart-container">
             <FaShoppingCart className="icon" />
@@ -325,8 +424,8 @@ const Header = () => {
         </div>
       </header>
 
-     {/* Wishlist Popup */}
-     {isWishlistOpen && (
+      {/* Wishlist Popup */}
+      {isWishlistOpen && (
         <div className="wishlist-popup">
           <div className="wishlist-header">
             <h3>My Wishlist</h3>

@@ -119,15 +119,15 @@ const ProductDetails = () => {
                 mobile_number: mobile_num,
                 product_id: product_id
             }
-             // Save the data to context
-             saveCheckoutData({ power, product });
+            // Save the data to context
+            saveCheckoutData({ power, product });
 
-             // Navigate to the checkout page
-             history('/ChekOutPage')
+            // Navigate to the checkout page
+            history('/ChekOutPage')
         } else {
             alert("Please select valid options.");
         }
-       
+
     }
 
     const handleImageClick = (imageSrc) => {
@@ -263,7 +263,7 @@ const ProductDetails = () => {
 
                         {/* Product Info Section */}
                         <div className="product-info-section">
-                            <h1 className="product-title">{item?.result?.highlights} Stylish Sunglasses</h1>
+                            <h1 className="product-title1">{item?.result?.highlights} Stylish Sunglasses</h1>
                             <p className="product-price">₹{product_price.toFixed(0)}</p>
                             <button className="try-on-btn">TRY ON FACE</button>
                             <button className="add-to-cart-btn"><img src={tdesign} style={{ marginRight: "10px" }} alt="tdesign" />ADD TO CART</button>
@@ -274,16 +274,23 @@ const ProductDetails = () => {
                                 <button className="quantity-btn">+</button> */}
                                 {/* <button className="add-to-cart-btn"><img src={tdesign} alt="tdesign" />ADD TO CART</button> */}
                             </div>
-                            <div className="cart-controls">
+                            <div className="cart-controls" style={{ marginBottom: "5px" }}>
                                 <button className="buy-now-btn" onClick={handleDirectPayment}>BUY NOW</button>
                                 <button className="buy-now-btn" onClick={handlePowerClick}>ADD POWER</button>
                             </div>
 
-                            <div className="technical-details">
+                            {/* <div className="technical-details">
                                 <h3>Technical Details</h3>
                                 <ul>
                                     <li>Product ID: DCM413</li>
-                                    <li>Frame Dimensions: 54 mm / 16 mm / 145 mm</li>
+                                    <li>Frame Shape: 54 mm / 16 mm / 145 mm</li>
+                                    <li>Frame Type: 54 mm / 16 mm / 145 mm</li>
+                                    <li>Discount: 54 mm / 16 mm / 145 mm</li>                   
+                                    <li>Frame Material: 54 mm / 16 mm / 145 mm</li>
+                                    <li>Frame Description: 54 mm / 16 mm / 145 mm</li>
+                                    <li>Lens Information: 54 mm / 16 mm / 145 mm</li>
+                                    <li>Frame Material: 54 mm / 16 mm / 145 mm</li>
+                                    
                                     <li style={{ display: "flex" }}>
                                         <strong>Color: </strong>
                                         <div className="color-options">
@@ -330,9 +337,60 @@ const ProductDetails = () => {
                                             )}
                                         </div>
                                     </li>
-                                    <li>Product Shape: Rectangle</li>
+                                    
+                                </ul>
+                            </div> */}
+                            <div className="technical-details">
+                                <h3>Technical Details</h3>
+                                <ul>
+                                    <li><strong>Product ID:</strong> DCM413</li>
+                                    <li><strong>Frame Shape:</strong> 54 mm / 16 mm / 145 mm</li>
+                                    <li><strong>Frame Type:</strong> 54 mm / 16 mm / 145 mm</li>
+                                    <li><strong>Discount:</strong> 20%</li>
+                                    <li><strong>Frame Material:</strong> 54 mm / 16 mm / 145 mm</li>
+                                    <li><strong>Frame Description:</strong> 54 mm / 16 mm / 145 mm kkkkkkkkkk</li>
+                                    <li><strong>Lens Information:</strong> 54 mm / 16 mm / 145 mm</li>
+                                    <li><strong>Frame Material:</strong> 54 mm / 16 mm / 145 mm</li>
+
+                                    <li className="color-section">
+                                        <strong>Color: </strong>
+                                        <div className="color-options">
+                                            {item?.result?.color ? (
+                                                (() => {
+                                                    let colors = [];
+                                                    try {
+                                                        colors = JSON.parse(item.result.color);
+                                                        if (!Array.isArray(colors)) {
+                                                            console.error("Parsed colors is not an array");
+                                                            colors = [];
+                                                        }
+                                                    } catch (err) {
+                                                        console.error("Failed to parse color data:", err);
+                                                    }
+                                                    return colors.length > 0 ? (
+                                                        colors.map((colorObj, index) => {
+                                                            const [colorName, colorCode] = Object.entries(colorObj)[0];
+                                                            return (
+                                                                <span
+                                                                    key={index}
+                                                                    className="color-box"
+                                                                    title={colorName}
+                                                                    style={{ backgroundColor: colorCode }}
+                                                                ></span>
+                                                            );
+                                                        })
+                                                    ) : (
+                                                        <span className="no-color">No colors available</span>
+                                                    );
+                                                })()
+                                            ) : (
+                                                <span className="no-color">No colors available</span>
+                                            )}
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
+
 
                         </div>
                     </div>

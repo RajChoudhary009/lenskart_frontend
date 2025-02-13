@@ -8,6 +8,8 @@ import Header from "../../components/Header";
 import { LuArrowDownUp } from "react-icons/lu";
 import { CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
+// import { ImFire } from "react-icons/im";
+// import { SlFire } from "react-icons/sl";
 import tdesign from '../../Assets/images/tdesign_cart.png';
 
 import Aviator from '../../Assets/images/Aviator.png'
@@ -93,7 +95,7 @@ const ProductDisplay = () => {
   });
   const [hoveredColor, setHoveredColor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 9;
+  const productsPerPage = 6;
   
 
   const handleMouseEnter = (productId, hoverImage) => {
@@ -647,11 +649,11 @@ const ProductDisplay = () => {
                     />
                     </Link>
                     <div className="product-info">
-                      {product.count_in_stock === 0 && (
+                      {product.count_in_stock === 0 ? (
                         <h4 className='out-of-stock'>Out of stock</h4>
-                      )}
+                      ):(<h4 className='out-of-stock' style={{color:"green"}}>in stock</h4>)}
                       <h4 className="product-hilight">{product.product_title}</h4>
-                      <h4 className="product-title">{product.highlights}</h4>
+                      <strong className="product-title">{product.highlights}</strong>
                       <p className="product-price">₹{(product.product_price - (product.product_price * product.discount / 100)).toFixed(0)}/-</p>
                       <div className="button-add-to-cart">
                         <div className="product-attributes">
