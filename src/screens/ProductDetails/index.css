@@ -182,7 +182,7 @@
     max-width: 100%;
     /* margin: auto; */
     overflow-y: scroll;
-    height: 290px;
+    height: 260px;
   }
   
   .technical-details h3 {
@@ -213,6 +213,37 @@
     gap: 10px; /* Adds spacing for better readability */
     width: 360px;
   }
+  .see-all-btn {
+    background: linear-gradient(135deg, #ff7eb3, #ff758c); /* Gradient color */
+    color: #009688;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px; /* Rounded button */
+    cursor: pointer;
+    margin-top: 10px;
+    display: inline-block;
+    width: auto;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(211, 159, 167, 0.4); /* Soft shadow */
+    transition: all 0.3s ease-in-out;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.see-all-btn:hover {
+    background: linear-gradient(135deg, #ff5f92, #ff3366);
+    box-shadow: 0px 6px 15px rgba(255, 51, 102, 0.5);
+    transform: scale(1.05);
+}
+
+.see-all-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0px 3px 8px rgba(255, 51, 102, 0.3);
+}
+
+
   
   /* If you
   .technical-details li:last-child {

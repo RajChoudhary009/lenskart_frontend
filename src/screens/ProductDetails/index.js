@@ -68,6 +68,32 @@ const ProductDetails = () => {
     const [rightLens, setRightLens] = useState({ SPH: "-0.00", CYL: "-0.25" });
     const [add, setAdd] = useState('')
     const [axis, setAxis] = useState('')
+    const [showAll, setShowAll] = useState(false);
+    const [selectedColor, setSelectedColor] = useState(null); // State for selected color
+
+
+    useEffect(() => {
+        if (item?.result?.frameColor && item?.result?.lenshColor) {
+            try {
+                const frameColors = JSON.parse(item.result.frameColor) || [];
+                const lensColors = JSON.parse(item.result.lenshColor) || [];
+
+                if (Array.isArray(frameColors) && frameColors.length > 0) {
+                    const [frameName, frameHex] = Object.entries(frameColors[0])[0] || ["Unknown", "#ffffff"];
+                    const lensObj = lensColors[0] || { "Default Lens": "#000000" };
+                    const [lensName, lensHex] = Object.entries(lensObj)[0] || ["Default", "#000000"];
+
+                    setSelectedColor({ frameName, frameHex, lensName, lensHex });
+                }
+            } catch (error) {
+                console.error("Error parsing colors:", error);
+            }
+        }
+    }, [item]); // Runs when item changes
+
+    const handleColorSelect = (frameName, frameHex, lensName, lensHex) => {
+        setSelectedColor({ frameName, frameHex, lensName, lensHex });
+    };
 
     useEffect(() => {
         // Retrieve cart items from local storage
@@ -344,38 +370,45 @@ const ProductDetails = () => {
                                 <h3>Technical Details</h3>
                                 <ul>
                                     <li><strong>Product ID:</strong> DCM413</li>
-                                    <li><strong>Frame Shape:</strong> 54 mm / 16 mm / 145 mm</li>
-                                    <li><strong>Frame Type:</strong> 54 mm / 16 mm / 145 mm</li>
-                                    <li><strong>Discount:</strong> 20%</li>
-                                    <li><strong>Frame Material:</strong> 54 mm / 16 mm / 145 mm</li>
-                                    <li><strong>Frame Description:</strong> 54 mm / 16 mm / 145 mm kkkkkkkkkk</li>
-                                    <li><strong>Lens Information:</strong> 54 mm / 16 mm / 145 mm</li>
-                                    <li><strong>Frame Material:</strong> 54 mm / 16 mm / 145 mm</li>
-
+                                    <li><strong>Model No:</strong> 54 mm / 16 mm / 145 mm</li>
+                                    <li><strong>Frame Size:</strong> 54 mm / 16 mm / 145 mm</li>
                                     <li className="color-section">
-                                        <strong>Color: </strong>
+                                        <strong>Frame Color: </strong>
                                         <div className="color-options">
-                                            {item?.result?.color ? (
+                                            {item?.result?.frameColor && item?.result?.lenshColor ? (
                                                 (() => {
-                                                    let colors = [];
+                                                    let frameColors = [];
+                                                    let lensColors = [];
+
                                                     try {
-                                                        colors = JSON.parse(item.result.color);
-                                                        if (!Array.isArray(colors)) {
-                                                            console.error("Parsed colors is not an array");
-                                                            colors = [];
-                                                        }
-                                                    } catch (err) {
-                                                        console.error("Failed to parse color data:", err);
+                                                        frameColors = JSON.parse(item.result.frameColor) || [];
+                                                        lensColors = JSON.parse(item.result.lenshColor) || [];
+                                                    } catch (error) {
+                                                        console.error("Failed to parse colors:", error);
                                                     }
-                                                    return colors.length > 0 ? (
-                                                        colors.map((colorObj, index) => {
-                                                            const [colorName, colorCode] = Object.entries(colorObj)[0];
+
+                                                    return frameColors.length > 0 ? (
+                                                        frameColors.map((frameObj, colorIndex) => {
+                                                            const [frameName, frameHex] = Object.entries(frameObj)[0] || ["Unknown", "#ffffff"];
+                                                            const lensObj = lensColors[colorIndex] || { "Default Lens": "#000000" };
+                                                            const [lensName, lensHex] = Object.entries(lensObj)[0] || ["Default", "#000000"];
+
                                                             return (
                                                                 <span
-                                                                    key={index}
-                                                                    className="color-box"
-                                                                    title={colorName}
-                                                                    style={{ backgroundColor: colorCode }}
+                                                                    key={colorIndex}
+                                                                    className={`color-box ${selectedColor?.frameHex === frameHex ? "selected" : ""}`}
+                                                                    title={`Frame: ${frameName}, Lens: ${lensName}`}
+                                                                    style={{
+                                                                        background: `linear-gradient(to top, ${frameHex} 50%, ${lensHex} 50%)`,
+                                                                        display: 'inline-block',
+                                                                        width: '30px',
+                                                                        height: '30px',
+                                                                        borderRadius: '15px',
+                                                                        margin: '0 5px',
+                                                                        border: selectedColor?.frameHex === frameHex ? '2px solid #89b8b4' : '1px solid #ddd',
+                                                                        cursor: 'pointer'
+                                                                    }}
+                                                                    onClick={() => handleColorSelect(frameName, frameHex, lensName, lensHex)}
                                                                 ></span>
                                                             );
                                                         })
@@ -389,8 +422,22 @@ const ProductDetails = () => {
                                         </div>
                                     </li>
                                 </ul>
-                            </div>
 
+                                {/* Display selected color */}
+                                {selectedColor && (
+                                    <p>
+                                        Selected Color: <strong>{selectedColor.frameName}</strong> (Frame) &{" "}
+                                        <strong>{selectedColor.lensName}</strong> (Lens)
+                                    </p>
+                                )}
+                                {/* Show "See All" button if more than 3 details */}
+                                <button
+                                    className="see-all-btn"
+                                    onClick={() => setShowAll(!showAll)}
+                                >
+                                    {showAll ? "See Less" : "See All"}
+                                </button>
+                            </div>
 
                         </div>
                     </div>

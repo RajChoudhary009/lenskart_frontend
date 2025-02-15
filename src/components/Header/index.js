@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { SERVER_API_URL } from '../../server/server';
 import { GlobleInfo } from '../../App';
 // import { FaShoppingCart } from 'react-icons/fa'; // Importing icons
-import { BsBagHeart } from "react-icons/bs";
+import { BsBagHeart, BsBagHeartFill} from "react-icons/bs";
 // import { CiHeart } from "react-icons/ci";
 import { FaHeart, FaShoppingCart, FaPhone } from "react-icons/fa";
 // import { IoBagOutline } from "react-icons/io5";

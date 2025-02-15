@@ -12,7 +12,7 @@ import { FaHeart } from "react-icons/fa";
 // import { SlFire } from "react-icons/sl";
 import { BsBagHeart } from "react-icons/bs";
 import { BsBagHeartFill } from "react-icons/bs";
-import tdesign from '../../Assets/images/tdesign_cart.png';
+// import tdesign from '../../Assets/images/tdesign_cart.png';
 
 import Aviator from '../../Assets/images/Aviator.png'
 import CatsEye from '../../Assets/images/CatsEye.png'
@@ -98,7 +98,7 @@ const ProductDisplay = () => {
   const [hoveredColor, setHoveredColor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
-  
+
 
   const handleMouseEnter = (productId, hoverImage) => {
     setHoveredImages((prev) => ({
@@ -612,7 +612,7 @@ const ProductDisplay = () => {
           </div>
 
           {/* Product Grid Section */}
-          <div className="product-grid">
+          {/* <div className="product-grid">
             {
               currentProducts.map((product, index) => {
                 const defaultImage = product.product_thumnail_img;
@@ -638,25 +638,28 @@ const ProductDisplay = () => {
                         <BsBagHeart className='hert-icon' onClick={() => toggleWishlist(product)} />
                       )}
                     </div>
-                    {/* <Link to={`/product-item/${product.product_id}`}>
-                      <img className="carousel-image2" src={`${SERVER_API_URL}/${product?.product_thumnail_img}`} alt={`ImageItem ${product.product_id + 1}`} />
-                    </Link> */}
+                    
                     <Link to={`/product-item/${product.product_id}`}>
-                    <img
-                      className="carousel-image2"
-                      src={`${SERVER_API_URL}/${imageSrc}`}
-                      alt={`ImageItem ${product.product_id}`}
-                      onMouseEnter={() => handleMouseEnter(product.product_id, hoverImage)}
-                      onMouseLeave={() => handleMouseLeave(product.product_id, defaultImage)}
-                    />
+                      <img
+                        className="carousel-image2"
+                        src={`${SERVER_API_URL}/${imageSrc}`}
+                        alt={`ImageItem ${product.product_id}`}
+                        onMouseEnter={() => handleMouseEnter(product.product_id, hoverImage)}
+                        onMouseLeave={() => handleMouseLeave(product.product_id, defaultImage)}
+                      />
                     </Link>
                     <div className="product-info">
                       {product.count_in_stock === 0 ? (
                         <h4 className='out-of-stock'>Out of stock</h4>
-                      ):(<h4 className='out-of-stock' style={{color:"green"}}>in stock</h4>)}
+                      ) : (<h4 className='out-of-stock' style={{ color: "green" }}>in stock</h4>)}
                       <h4 className="product-hilight">{product.product_title}</h4>
                       <strong className="product-title">{product.highlights}</strong>
-                      <p className="product-price">₹{(product.product_price - (product.product_price * product.discount / 100)).toFixed(0)}/-</p>
+                      <div className="product-discount">
+                        <p className="discount-title">₹{product.product_price}</p>
+                        <span className="discount-off">({product.discount}% OFF)</span>
+                      </div>
+                      <p className="product-price1">₹{(product.product_price - (product.product_price * product.discount / 100)).toFixed(0)}/-</p>
+
                       <div className="button-add-to-cart">
                         <div className="product-attributes">
                           <p className="product-attribute">
@@ -694,16 +697,131 @@ const ProductDisplay = () => {
                             <strong>Frame material:</strong> {product.material}
                           </p>
                         </div>
-                        <button className="cart-btn" onClick={() => addToCart(product)}>
-                          <img src={tdesign} alt="tdesign" />
-                        </button>
+                        
                       </div>
                     </div>
                   </div>
                 );
               })
             }
+          </div> */}
+
+          <div className="product-grid">
+            {currentProducts.map((product, index) => {
+              const defaultImage = product.product_thumnail_img;
+              const hoverImage = product.product_all_img?.[0] || defaultImage;
+              const imageSrc = hoveredImages[product.product_id] || defaultImage;
+
+              let frameColors = [];
+              let lensColors = [];
+
+              // Safely parse frameColor
+              try {
+                if (product.frameColor && product.frameColor !== "undefined") {
+                  frameColors = JSON.parse(product.frameColor);
+                } else {
+                  frameColors = [];
+                }
+                if (!Array.isArray(frameColors))
+                  frameColors = [];
+              } catch (error) {
+                console.error(`Failed to parse frameColor for product ID ${product.product_id}:`, error);
+              }
+
+              // Safely parse lensColor
+              try {
+                if (product.lenshColor && product.lenshColor !== "undefined") {
+                  lensColors = JSON.parse(product.lenshColor);
+                } else {
+                  lensColors = [];
+                }
+                if (!Array.isArray(lensColors)) lensColors = [];
+              } catch (error) {
+                console.error(`Failed to parse lensColor for product ID ${product.product_id}:`, error);
+              }
+
+              return (
+                <div key={index} className="product-card">
+                  <div className="red-heart-container">
+                    {wishlistItems.some(item => item.product_id === product.product_id) ? (
+                      <BsBagHeartFill className='hert-icon red-background' onClick={() => toggleWishlist(product)} />
+                    ) : (
+                      <BsBagHeart className='hert-icon' onClick={() => toggleWishlist(product)} />
+                    )}
+                  </div>
+                  <Link to={`/product-item/${product.product_id}`}>
+                    <img
+                      className="carousel-image2"
+                      src={`${SERVER_API_URL}/${imageSrc}`}
+                      alt={`ImageItem ${product.product_id}`}
+                      onMouseEnter={() => handleMouseEnter(product.product_id, hoverImage)}
+                      onMouseLeave={() => handleMouseLeave(product.product_id, defaultImage)}
+                    />
+                  </Link>
+                  <div className="product-info">
+                    {product.count_in_stock === 0 ? (
+                      <h4 className='out-of-stock'>Out of stock</h4>
+                    ) : (
+                      <h4 className='out-of-stock' style={{ color: "green" }}>In stock</h4>
+                    )}
+                    <h4 className="product-hilight">{product.product_title}</h4>
+                    <strong className="product-title">{product.highlights}</strong>
+                    <div className="product-discount">
+                      <p className="discount-title">₹{product.product_price}</p>
+                      <span className="discount-off">({product.discount}% OFF)</span>
+                    </div>
+                    <p className="product-price1">
+                      ₹{(product.product_price - (product.product_price * product.discount / 100)).toFixed(0)}/-
+                    </p>
+
+                    <div className="button-add-to-cart">
+                      <div className="product-attributes">
+                        <p className="product-attribute">
+                          <strong>Colors:</strong>
+                          <div className="color-options">
+                            {frameColors.length > 0 ? (
+                              frameColors.map((frameObj, colorIndex) => {
+                                // Extract first frame color
+                                const [frameName, frameHex] = Object.entries(frameObj)[0] || ["Unknown", "#ffffff"];
+
+                                // Match corresponding lens color or fallback to default color
+                                const lensObj = lensColors[colorIndex] || { "Default Lens": "#000000" };
+                                const [lensName, lensHex] = Object.entries(lensObj)[0] || ["Default", "#000000"];
+
+                                return (
+                                  <span
+                                    key={colorIndex}
+                                    className="color-box"
+                                    title={`Frame: ${frameName}, Lens: ${lensName}`}
+                                    style={{
+                                      background: `linear-gradient(to top, ${frameHex} 50%, ${lensHex} 50%)`,
+                                      display: 'inline-block',
+                                      width: '30px',
+                                      height: '30px',
+                                      borderRadius: '15px',
+                                      margin: '0 5px',
+                                      border: '1px solid #ddd',
+                                      cursor: 'pointer'
+                                    }}
+                                  ></span>
+                                );
+                              })
+                            ) : (
+                              <span>No Colors Available</span>
+                            )}
+                          </div>
+                        </p>
+                        <p className="product-attribute">
+                          <strong>Frame material:</strong> {product.material}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
+
         </div>
 
         {/* Pagination Section */}
