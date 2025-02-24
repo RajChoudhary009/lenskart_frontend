@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { SERVER_API_URL } from '../../server/server';
 import axios from 'axios'; // Import Axios
 import { GlobleInfo } from '../../App';
@@ -57,6 +57,7 @@ const ProductDetails = () => {
     const [mobile_num, setMobile_num] = useState("");
     const { getProductCount, saveCheckoutData } = useContext(GlobleInfo)
     const [item, setItem] = useState({});
+    const [allProducts, setAllProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
     const [showPowerPopup, setShowPowerPopup] = useState(false);
@@ -91,10 +92,6 @@ const ProductDetails = () => {
         }
     }, [item]); // Runs when item changes
 
-    const handleColorSelect = (frameName, frameHex, lensName, lensHex) => {
-        setSelectedColor({ frameName, frameHex, lensName, lensHex });
-    };
-
     useEffect(() => {
         // Retrieve cart items from local storage
         // const cartItemsFromLocalStorage = JSON.parse(localStorage.getItem('cart')) || [];
@@ -123,6 +120,7 @@ const ProductDetails = () => {
             };
             const product = {
                 mobile_number: mobile_num,
+                selectedColor: selectedColor,
                 product_id: product_id
             }
 
@@ -143,6 +141,7 @@ const ProductDetails = () => {
             }
             const product = {
                 mobile_number: mobile_num,
+                selectedColor: selectedColor,
                 product_id: product_id
             }
             // Save the data to context
@@ -217,6 +216,47 @@ const ProductDetails = () => {
 
         fetchData();
     }, [product_id]);
+
+    useEffect(() => {
+        const fetchData1 = async () => {
+            try {
+                const response = await axios.get(`${SERVER_API_URL}/product`);
+                const products = response.data;
+                setAllProducts(products);
+                console.log("products", products)
+
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+        fetchData1();
+    }, [product_id]);
+
+    const handleColorSelect = (frameColor, lensColor) => {
+        setSelectedColor({
+            frameColor,
+            lensColor
+        });
+    };
+
+    const getColorsForProduct = (productTitle) => {
+        // ✅ Ensure allProducts.result is an array before filtering
+        const productsArray = Array.isArray(allProducts?.result) ? allProducts.result : [];
+    
+        // Filter products that match the same title
+        const matchingProducts = productsArray.filter(p => p.product_title === productTitle);
+    
+        // Extract frame and lens colors
+        const colors = matchingProducts.map(p => ({
+            productId: p.product_id,  // ✅ Include product ID
+            frameColor: p.frameColor || "#FFFFFF", // Default White if null
+            lensColor: p.lenshColor || "#000000",  // Default Black if null
+        }));
+    
+        return colors;
+    };
+    
+    
 
     const product_price = item?.result?.product_price - (item?.result?.product_price * item?.result?.discount / 100)
 
@@ -305,67 +345,6 @@ const ProductDetails = () => {
                                 <button className="buy-now-btn" onClick={handlePowerClick}>ADD POWER</button>
                             </div>
 
-                            {/* <div className="technical-details">
-                                <h3>Technical Details</h3>
-                                <ul>
-                                    <li>Product ID: DCM413</li>
-                                    <li>Frame Shape: 54 mm / 16 mm / 145 mm</li>
-                                    <li>Frame Type: 54 mm / 16 mm / 145 mm</li>
-                                    <li>Discount: 54 mm / 16 mm / 145 mm</li>                   
-                                    <li>Frame Material: 54 mm / 16 mm / 145 mm</li>
-                                    <li>Frame Description: 54 mm / 16 mm / 145 mm</li>
-                                    <li>Lens Information: 54 mm / 16 mm / 145 mm</li>
-                                    <li>Frame Material: 54 mm / 16 mm / 145 mm</li>
-                                    
-                                    <li style={{ display: "flex" }}>
-                                        <strong>Color: </strong>
-                                        <div className="color-options">
-                                            {item?.result?.color ? (
-                                                (() => {
-                                                    let colors = [];
-                                                    try {
-                                                        // Parse the `color` JSON string
-                                                        colors = JSON.parse(item.result.color);
-                                                        if (!Array.isArray(colors)) {
-                                                            console.error("Parsed colors is not an array");
-                                                            colors = [];
-                                                        }
-                                                    } catch (err) {
-                                                        console.error("Failed to parse color data:", err);
-                                                    }
-                                                    return colors.length > 0 ? (
-                                                        colors.map((colorObj, index) => {
-                                                            const [colorName, colorCode] = Object.entries(colorObj)[0];
-                                                            return (
-                                                                <span
-                                                                    key={index}
-                                                                    className="color-box"
-                                                                    title={colorName}
-                                                                    style={{
-                                                                        backgroundColor: colorCode,
-                                                                        display: 'inline-block',
-                                                                        width: '40px',
-                                                                        height: '20px',
-                                                                        borderRadius: '10px',
-                                                                        margin: '0 5px',
-                                                                        border: '1px solid #ddd',
-                                                                        cursor: 'pointer',
-                                                                    }}
-                                                                ></span>
-                                                            );
-                                                        })
-                                                    ) : (
-                                                        <span style={{ marginLeft: "10px" }}>No colors available</span>
-                                                    );
-                                                })()
-                                            ) : (
-                                                <span style={{ marginLeft: "10px" }}>No colors available</span>
-                                            )}
-                                        </div>
-                                    </li>
-                                    
-                                </ul>
-                            </div> */}
                             <div className="technical-details">
                                 <h3>Technical Details</h3>
                                 <ul>
@@ -375,49 +354,30 @@ const ProductDetails = () => {
                                     <li className="color-section">
                                         <strong>Frame Color: </strong>
                                         <div className="color-options">
-                                            {item?.result?.frameColor && item?.result?.lenshColor ? (
-                                                (() => {
-                                                    let frameColors = [];
-                                                    let lensColors = [];
-
-                                                    try {
-                                                        frameColors = JSON.parse(item.result.frameColor) || [];
-                                                        lensColors = JSON.parse(item.result.lenshColor) || [];
-                                                    } catch (error) {
-                                                        console.error("Failed to parse colors:", error);
-                                                    }
-
-                                                    return frameColors.length > 0 ? (
-                                                        frameColors.map((frameObj, colorIndex) => {
-                                                            const [frameName, frameHex] = Object.entries(frameObj)[0] || ["Unknown", "#ffffff"];
-                                                            const lensObj = lensColors[colorIndex] || { "Default Lens": "#000000" };
-                                                            const [lensName, lensHex] = Object.entries(lensObj)[0] || ["Default", "#000000"];
-
-                                                            return (
-                                                                <span
-                                                                    key={colorIndex}
-                                                                    className={`color-box ${selectedColor?.frameHex === frameHex ? "selected" : ""}`}
-                                                                    title={`Frame: ${frameName}, Lens: ${lensName}`}
-                                                                    style={{
-                                                                        background: `linear-gradient(to top, ${frameHex} 50%, ${lensHex} 50%)`,
-                                                                        display: 'inline-block',
-                                                                        width: '30px',
-                                                                        height: '30px',
-                                                                        borderRadius: '15px',
-                                                                        margin: '0 5px',
-                                                                        border: selectedColor?.frameHex === frameHex ? '2px solid #89b8b4' : '1px solid #ddd',
-                                                                        cursor: 'pointer'
-                                                                    }}
-                                                                    onClick={() => handleColorSelect(frameName, frameHex, lensName, lensHex)}
-                                                                ></span>
-                                                            );
-                                                        })
-                                                    ) : (
-                                                        <span className="no-color">No colors available</span>
-                                                    );
-                                                })()
+                                            {getColorsForProduct(item?.result?.product_title).length > 0 ? (
+                                                getColorsForProduct(item?.result?.product_title).map((colorObj) => (
+                                                    
+                                                    <Link to={`/product-item/${colorObj.productId}`}>
+                                                        <span
+                                                            key={colorObj.productId}  // ✅ Using Product ID as key
+                                                            className={`color-box ${selectedColor?.frameColor === colorObj.frameColor && selectedColor?.lensColor === colorObj.lensColor ? "selected" : ""}`}
+                                                            title={`Frame: ${colorObj.frameColor}, Lens: ${colorObj.lensColor}`}
+                                                            style={{
+                                                                background: `linear-gradient(to top, ${colorObj.frameColor} 50%, ${colorObj.lensColor} 50%)`,
+                                                                display: 'inline-block',
+                                                                width: '30px',
+                                                                height: '30px',
+                                                                borderRadius: '15px',
+                                                                margin: '0 5px',
+                                                                border: '1px solid #ddd',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                            onClick={() => handleColorSelect(colorObj.frameColor, colorObj.lensColor)}
+                                                        ></span>
+                                                    </Link>
+                                                ))
                                             ) : (
-                                                <span className="no-color">No colors available</span>
+                                                <span>No Colors Available</span>
                                             )}
                                         </div>
                                     </li>
@@ -426,8 +386,8 @@ const ProductDetails = () => {
                                 {/* Display selected color */}
                                 {selectedColor && (
                                     <p>
-                                        Selected Color: <strong>{selectedColor.frameName}</strong> (Frame) &{" "}
-                                        <strong>{selectedColor.lensName}</strong> (Lens)
+                                        Selected Color: <strong>{selectedColor.frameColor}</strong> (Frame) &{" "}
+                                        <strong>{selectedColor.lensColor}</strong> (Lens)
                                     </p>
                                 )}
                                 {/* Show "See All" button if more than 3 details */}

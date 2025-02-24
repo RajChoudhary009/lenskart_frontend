@@ -38,7 +38,7 @@ import a2 from '../../Assets/images/sunglasses2.jpg'
 import b2 from '../../Assets/images/sunglasses3.png'
 import d2 from '../../Assets/images/sunglasses4.png'
 import d from '../../Assets/images/sunglasses5.png'
-import e2 from '../../Assets/images/sunglasses6.jpg'
+import e2 from '../../Assets/images/sunglasses6.png'
 
 import './home.css';
 

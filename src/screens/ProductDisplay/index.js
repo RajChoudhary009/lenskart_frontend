@@ -6,13 +6,14 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Header from "../../components/Header";
 import { LuArrowDownUp } from "react-icons/lu";
-import { CiHeart } from "react-icons/ci";
-import { FaHeart } from "react-icons/fa";
+// import { CiHeart } from "react-icons/ci";
+// import { FaHeart } from "react-icons/fa";
 // import { ImFire } from "react-icons/im";
 // import { SlFire } from "react-icons/sl";
-import { BsBagHeart } from "react-icons/bs";
-import { BsBagHeartFill } from "react-icons/bs";
-// import tdesign from '../../Assets/images/tdesign_cart.png';
+// import { BsBagHeart } from "react-icons/bs";
+// import { BsBagHeartFill } from "react-icons/bs";
+import wishlist from '../../Assets/images/wishlist.svg'
+import wishlist1 from '../../Assets/images/wishlist1.svg'
 
 import Aviator from '../../Assets/images/Aviator.png'
 import CatsEye from '../../Assets/images/CatsEye.png'
@@ -77,7 +78,7 @@ const lensColors = [
 ];
 const ProductDisplay = () => {
   const { category } = useParams();
-  const { getProductCount } = useContext(GlobleInfo);
+  const { getProductCount, updateCounts } = useContext(GlobleInfo);
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   // State to track hovered images
@@ -92,9 +93,7 @@ const ProductDisplay = () => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(5000);
   const [sortOption, setSortOption] = useState('Price: High to Low');
-  const [wishlistItems, setWishlistItems] = useState(() => {
-    return JSON.parse(localStorage.getItem('wishlist')) || [];
-  });
+  const [wishlistItems, setWishlistItems] = useState([]);
   const [hoveredColor, setHoveredColor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
@@ -207,33 +206,31 @@ const ProductDisplay = () => {
     getProductCount(uniqueItemCount);
   };
 
-  // const wishlist = (item) => {
-  //   const existingWishlistItems = JSON.parse(localStorage.getItem('wishlist')) || [];
-
-  //   const itemIndex = existingWishlistItems.findIndex(wishlistItem => wishlistItem.id === item.id);
-
-  //   if (itemIndex !== -1) {
-  //     alert(`${item.product_title} is already in your wishlist!`);
-  //   } else {
-  //     // Add item to wishlist
-  //     existingWishlistItems.push(item);
-  //     localStorage.setItem('wishlist', JSON.stringify(existingWishlistItems));
-  //     alert(`${item.product_title} added to wishlist successfully!`);
-  //   }
-  // }
+  // Run effect whenever wishlistItems updates
+  useEffect(() => {
+    const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    setWishlistItems(storedWishlist);
+  }, []); // ✅ Add wishlistItems as dependency
 
   const toggleWishlist = (product) => {
-    let updatedWishlist = [...wishlistItems];
-    const index = updatedWishlist.findIndex(item => item.product_id === product.product_id);
+    setWishlistItems((prevWishlist) => {
+      let updatedWishlist = [...prevWishlist];
+      const index = updatedWishlist.findIndex(item => item.product_id === product.product_id);
 
-    if (index !== -1) {
-      updatedWishlist.splice(index, 1); // Remove if exists
-    } else {
-      updatedWishlist.push(product); // Add if not exists
-    }
+      if (index !== -1) {
+        updatedWishlist.splice(index, 1); // Remove if exists
+      } else {
+        updatedWishlist.push(product); // Add if not exists
+      }
 
-    localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
-    setWishlistItems(updatedWishlist); // Update state
+      localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+      updateCounts(); // Update count globally
+      return updatedWishlist;
+    });
+    // ✅ Use window.location.reload() to bypass ESLint restriction
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   const handleFrameTypeChange = (framtype) => {
@@ -288,6 +285,20 @@ const ProductDisplay = () => {
     } else {
       setMaxPrice(Math.max(value, minPrice + 1));
     }
+  };
+
+  const getColorsForProduct = (productTitle) => {
+    // Filter products that match the same title
+    const matchingProducts = allProducts.filter(p => p.product_title === productTitle);
+
+    // Extract frame and lens colors
+    const colors = matchingProducts.map(p => ({
+      productId: p.product_id,  // ✅ Include product ID
+      frameColor: p.frameColor || "#FFFFFF", // Default White if null
+      lensColor: p.lenshColor || "#000000",  // Default Black if null
+    }));
+
+    return colors;
   };
 
   const resetFilters = () => {
@@ -612,100 +623,6 @@ const ProductDisplay = () => {
           </div>
 
           {/* Product Grid Section */}
-          {/* <div className="product-grid">
-            {
-              currentProducts.map((product, index) => {
-                const defaultImage = product.product_thumnail_img;
-                const hoverImage = product.product_all_img?.[0] || defaultImage;
-                const imageSrc = hoveredImages[product.product_id] || defaultImage;
-
-                let colors = [];
-                // Safely parse the color field and ensure it's an array
-                try {
-                  const parsedColor = product.color ? JSON.parse(product.color) : [];
-                  colors = Array.isArray(parsedColor) ? parsedColor : [];
-                } catch (error) {
-                  console.error(`Failed to parse color for product ID ${product.product_id}:`, error);
-                  colors = []; // Default to an empty array if parsing fails
-                }
-
-                return (
-                  <div key={index} className="product-card">
-                    <div className='red-heart-container'>
-                      {wishlistItems.some(item => item.product_id === product.product_id) ? (
-                        <BsBagHeartFill className='hert-icon red-background' onClick={() => toggleWishlist(product)} />
-                      ) : (
-                        <BsBagHeart className='hert-icon' onClick={() => toggleWishlist(product)} />
-                      )}
-                    </div>
-                    
-                    <Link to={`/product-item/${product.product_id}`}>
-                      <img
-                        className="carousel-image2"
-                        src={`${SERVER_API_URL}/${imageSrc}`}
-                        alt={`ImageItem ${product.product_id}`}
-                        onMouseEnter={() => handleMouseEnter(product.product_id, hoverImage)}
-                        onMouseLeave={() => handleMouseLeave(product.product_id, defaultImage)}
-                      />
-                    </Link>
-                    <div className="product-info">
-                      {product.count_in_stock === 0 ? (
-                        <h4 className='out-of-stock'>Out of stock</h4>
-                      ) : (<h4 className='out-of-stock' style={{ color: "green" }}>in stock</h4>)}
-                      <h4 className="product-hilight">{product.product_title}</h4>
-                      <strong className="product-title">{product.highlights}</strong>
-                      <div className="product-discount">
-                        <p className="discount-title">₹{product.product_price}</p>
-                        <span className="discount-off">({product.discount}% OFF)</span>
-                      </div>
-                      <p className="product-price1">₹{(product.product_price - (product.product_price * product.discount / 100)).toFixed(0)}/-</p>
-
-                      <div className="button-add-to-cart">
-                        <div className="product-attributes">
-                          <p className="product-attribute">
-                            <strong>Color:</strong>
-                            <div className="color-options">
-                              {
-                                colors.length > 0 ? (
-                                  colors.map((colorObj, colorIndex) => {
-                                    const [colorName, colorCode] = Object.entries(colorObj)[0]; // Extract color name and code
-                                    return (
-                                      <span
-                                        key={colorIndex}
-                                        className="color-box"
-                                        title={colorName}
-                                        style={{
-                                          backgroundColor: colorCode,
-                                          display: 'inline-block',
-                                          width: '30px',
-                                          height: '16px',
-                                          borderRadius: '5px',
-                                          margin: '0 5px',
-                                          border: '1px solid #ddd',
-                                          cursor: 'pointer'
-                                        }}
-                                      ></span>
-                                    );
-                                  })
-                                ) : (
-                                  <span>No Colors Available</span>
-                                )
-                              }
-                            </div>
-                          </p>
-                          <p className="product-attribute">
-                            <strong>Frame material:</strong> {product.material}
-                          </p>
-                        </div>
-                        
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            }
-          </div> */}
-
           <div className="product-grid">
             {currentProducts.map((product, index) => {
               const defaultImage = product.product_thumnail_img;
@@ -741,12 +658,94 @@ const ProductDisplay = () => {
               }
 
               return (
+                // <div key={index} className="product-card">
+                //   <div className="red-heart-container">
+                //     {wishlistItems.some(item => item.product_id === product.product_id) ? (
+                //       // <BsBagHeartFill className='hert-icon red-background' onClick={() => toggleWishlist(product)} />
+                //       <img src={wishlist} alt="wishlist" className='wishlist-image' onClick={() => toggleWishlist(product)} />
+                //     ) : (
+                //       // <BsBagHeart className='hert-icon' onClick={() => toggleWishlist(product)} />
+                //       <img src={wishlist1} alt="wishlist" className='wishlist-image' onClick={() => toggleWishlist(product)} />
+                //     )}
+                //   </div>
+                //   <Link to={`/product-item/${product.product_id}`}>
+                //     <img
+                //       className="carousel-image2"
+                //       src={`${SERVER_API_URL}/${imageSrc}`}
+                //       alt={`ImageItem ${product.product_id}`}
+                //       onMouseEnter={() => handleMouseEnter(product.product_id, hoverImage)}
+                //       onMouseLeave={() => handleMouseLeave(product.product_id, defaultImage)}
+                //     />
+                //   </Link>
+                //   <div className="product-info">
+                //     {product.count_in_stock === 0 ? (
+                //       <h4 className='out-of-stock'>Out of stock</h4>
+                //     ) : (
+                //       <h4 className='out-of-stock' style={{ color: "green" }}>In stock</h4>
+                //     )}
+                //     <h4 className="product-hilight">{product.product_title}</h4>
+                //     <strong className="product-title">{product.highlights}</strong>
+                //     <div className="product-discount">
+                //       <p className="discount-title">₹{product.product_price}</p>
+                //       <span className="discount-off">({product.discount}% OFF)</span>
+                //     </div>
+                //     <p className="product-price1">
+                //       ₹{(product.product_price - (product.product_price * product.discount / 100)).toFixed(0)}/-
+                //     </p>
+
+                //     <div className="button-add-to-cart">
+                //       <div className="product-attributes">
+                //         <p className="product-attribute">
+                //           <strong>Colors:</strong>
+                //           <div className="color-options">
+                //             {frameColors.length > 0 ? (
+                //               frameColors.map((frameObj, colorIndex) => {
+                //                 // Extract first frame color
+                //                 const [frameName, frameHex] = Object.entries(frameObj)[0] || ["Unknown", "#ffffff"];
+
+                //                 // Match corresponding lens color or fallback to default color
+                //                 const lensObj = lensColors[colorIndex] || { "Default Lens": "#000000" };
+                //                 const [lensName, lensHex] = Object.entries(lensObj)[0] || ["Default", "#000000"];
+
+                //                 return (
+                //                   <span
+                //                     key={colorIndex}
+                //                     className="color-box"
+                //                     title={`Frame: ${frameName}, Lens: ${lensName}`}
+                //                     style={{
+                //                       background: `linear-gradient(to top, ${frameHex} 50%, ${lensHex} 50%)`,
+                //                       display: 'inline-block',
+                //                       width: '30px',
+                //                       height: '30px',
+                //                       borderRadius: '15px',
+                //                       margin: '0 5px',
+                //                       border: '1px solid #ddd',
+                //                       cursor: 'pointer'
+                //                     }}
+                //                   ></span>
+                //                 );
+                //               })
+                //             ) : (
+                //               <span>No Colors Available</span>
+                //             )}
+                //           </div>
+                //         </p>
+                //         <p className="product-attribute">
+                //           <strong>Frame material:</strong> {product.material}
+                //         </p>
+                //       </div>
+                //     </div>
+                //   </div>
+                // </div>
+
                 <div key={index} className="product-card">
                   <div className="red-heart-container">
                     {wishlistItems.some(item => item.product_id === product.product_id) ? (
-                      <BsBagHeartFill className='hert-icon red-background' onClick={() => toggleWishlist(product)} />
+                      // <BsBagHeartFill className='hert-icon red-background' onClick={() => toggleWishlist(product)} />
+                      <img src={wishlist} alt="wishlist" className='wishlist-image' onClick={() => toggleWishlist(product)} />
                     ) : (
-                      <BsBagHeart className='hert-icon' onClick={() => toggleWishlist(product)} />
+                      // <BsBagHeart className='hert-icon' onClick={() => toggleWishlist(product)} />
+                      <img src={wishlist1} alt="wishlist" className='wishlist-image' onClick={() => toggleWishlist(product)} />
                     )}
                   </div>
                   <Link to={`/product-item/${product.product_id}`}>
@@ -779,22 +778,15 @@ const ProductDisplay = () => {
                         <p className="product-attribute">
                           <strong>Colors:</strong>
                           <div className="color-options">
-                            {frameColors.length > 0 ? (
-                              frameColors.map((frameObj, colorIndex) => {
-                                // Extract first frame color
-                                const [frameName, frameHex] = Object.entries(frameObj)[0] || ["Unknown", "#ffffff"];
-
-                                // Match corresponding lens color or fallback to default color
-                                const lensObj = lensColors[colorIndex] || { "Default Lens": "#000000" };
-                                const [lensName, lensHex] = Object.entries(lensObj)[0] || ["Default", "#000000"];
-
-                                return (
+                            {getColorsForProduct(product.product_title).length > 0 ? (
+                              getColorsForProduct(product.product_title).map((colorObj) => (
+                                <Link to={`/product-item/${colorObj.productId}`}>
                                   <span
-                                    key={colorIndex}
+                                    key={colorObj.productId}  // ✅ Using Product ID as key
                                     className="color-box"
-                                    title={`Frame: ${frameName}, Lens: ${lensName}`}
+                                    title={`Frame: ${colorObj.frameColor}, Lens: ${colorObj.lensColor}`}
                                     style={{
-                                      background: `linear-gradient(to top, ${frameHex} 50%, ${lensHex} 50%)`,
+                                      background: `linear-gradient(to top, ${colorObj.frameColor} 50%, ${colorObj.lensColor} 50%)`,
                                       display: 'inline-block',
                                       width: '30px',
                                       height: '30px',
@@ -804,8 +796,8 @@ const ProductDisplay = () => {
                                       cursor: 'pointer'
                                     }}
                                   ></span>
-                                );
-                              })
+                                </Link>
+                              ))
                             ) : (
                               <span>No Colors Available</span>
                             )}

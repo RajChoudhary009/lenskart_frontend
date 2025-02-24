@@ -602,3 +602,23 @@
     border-radius: 10px;
     margin-bottom: 5px;
 }
+
+.color-box {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: border 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.color-box:hover {
+    transform: scale(1.1);
+}
+
+.color-box.selected {
+    border: 2px solid black; /* Highlight the selected color */
+    box-shadow: 0 0 5px rgba(0, 0, 255, 0.5); /* Subtle glow effect */
+    transform: scale(1.1);
+}

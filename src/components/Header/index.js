@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { SERVER_API_URL } from '../../server/server';
 import { GlobleInfo } from '../../App';
 // import { FaShoppingCart } from 'react-icons/fa'; // Importing icons
-import { BsBagHeart, BsBagHeartFill} from "react-icons/bs";
+import { BsBagHeart, BsBagHeartFill } from "react-icons/bs";
 // import { CiHeart } from "react-icons/ci";
 import { FaHeart, FaShoppingCart, FaPhone } from "react-icons/fa";
 // import { IoBagOutline } from "react-icons/io5";
@@ -12,6 +12,8 @@ import dceyewrLogo from '../../Assets/images/dceyewr-logo-no-text.png';
 import men_pic from '../../Assets/images/men_pic.webp'
 import women_pic from '../../Assets/images/women_pic.webp'
 import kid_pic from '../../Assets/images/kid_pic.webp'
+import wishlist from '../../Assets/images/wishlist.svg'
+import { FaRegHeart } from "react-icons/fa";
 
 import './index.css';
 
@@ -231,7 +233,7 @@ const trendingSearches = [
 
 const Header = () => {
   const navigate = useNavigate();
-  const { productCount } = useContext(GlobleInfo)
+  const { productCount, wishlistCount } = useContext(GlobleInfo)
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupContent, setPopupContent] = useState('');   // State for popup content
   const [query, setQuery] = useState("");
@@ -241,11 +243,16 @@ const Header = () => {
 
   // Load wishlist items from localStorage when the popup opens
   useEffect(() => {
-    if (isWishlistOpen) {
-      const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-      setWishlistItems(storedWishlist);
-    }
+    const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    setWishlistItems(storedWishlist);
   }, [isWishlistOpen]);
+
+  // Function to remove an item from the wishlist
+  const removeFromWishlist = (id) => {
+    const updatedItems = wishlistItems.filter((item) => item.product_id !== id);
+    setWishlistItems(updatedItems);
+    localStorage.setItem("wishlist", JSON.stringify(updatedItems)); // Update localStorage
+  };
 
   const togglePopup = (content) => {
     setPopupContent(content);  // Set the content for the popup
@@ -308,8 +315,20 @@ const Header = () => {
           <div className="user-actions">
             <Link className='login-sinup' to="/track-order">Track Order</Link>
             <Link className='login-sinup' to="/login">Sign In & Sign Up</Link>
-
-            <BsBagHeart className="icon" size={20} style={{color:"#97bce3"}} onClick={() => setIsWishlistOpen(true)} />
+            {/* <img src={wishlist} alt="wishlist" className='wishlist-image' /> */}
+            {/* <BsBagHeart className="icon" size={20} style={{color:"#97bce3"}} onClick={() => setIsWishlistOpen(true)} /> */}
+            <div className='wishlist-container'>
+            {wishlistItems.length > 0 ? (
+               <img src={wishlist} alt="wishlist" className='wishlist-image' style={{width:"25px"}} />
+              ) : (
+                <FaRegHeart className="icon" size={20} style={{ color: "#97bce3" }} onClick={() => setIsWishlistOpen(true)} />
+              )}
+             
+              {wishlistItems.length > 0 ? (
+                <div className="wishlist-badge">
+                  {wishlistCount}</div>
+              ) : (null)}
+            </div>
             <span onClick={() => setIsWishlistOpen(true)}>Wishlist</span>
 
             <div className="cart-container">
@@ -426,6 +445,26 @@ const Header = () => {
 
       {/* Wishlist Popup */}
       {isWishlistOpen && (
+        // <div className="wishlist-popup">
+        //   <div className="wishlist-header">
+        //     <h3>My Wishlist</h3>
+        //     <button className="close-btn" onClick={() => setIsWishlistOpen(false)}>X</button>
+        //   </div>
+        //   <div className="wishlist-content">
+        //     {wishlistItems.length > 0 ? (
+        //       wishlistItems.map((item) => (
+        //         <div key={item.id} className="wishlist-item">
+        //           <img src={`${SERVER_API_URL}/${item?.product_thumnail_img}`} alt={item.product_title} />
+        //           <p>{item.product_title}</p>
+        //           <p>₹{item.product_price}</p>
+        //         </div>
+        //       ))
+        //     ) : (
+        //       <p>No items in wishlist</p>
+        //     )}
+        //   </div>
+        // </div>
+
         <div className="wishlist-popup">
           <div className="wishlist-header">
             <h3>My Wishlist</h3>
@@ -434,14 +473,17 @@ const Header = () => {
           <div className="wishlist-content">
             {wishlistItems.length > 0 ? (
               wishlistItems.map((item) => (
-                <div key={item.id} className="wishlist-item">
+                <div key={item.product_id} className="wishlist-item">
                   <img src={`${SERVER_API_URL}/${item?.product_thumnail_img}`} alt={item.product_title} />
-                  <p>{item.product_title}</p>
-                  <p>₹{item.product_price}</p>
+                  <div className="wishlist-info">
+                    <p className="wishlist-product-title">{item.product_title}</p>
+                    <p className="wishlist-product-price">₹{item.product_price}</p>
+                  </div>
+                  <button className="delete-btn" onClick={() => removeFromWishlist(item.product_id)}>🗑</button>
                 </div>
               ))
             ) : (
-              <p>No items in wishlist</p>
+              <p className="empty-message">No items in wishlist</p>
             )}
           </div>
         </div>
