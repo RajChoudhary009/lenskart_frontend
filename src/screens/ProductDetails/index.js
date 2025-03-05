@@ -213,7 +213,6 @@ const ProductDetails = () => {
                 setLoading(false);
             }
         };
-
         fetchData();
     }, [product_id]);
 
@@ -242,21 +241,21 @@ const ProductDetails = () => {
     const getColorsForProduct = (productTitle) => {
         // ✅ Ensure allProducts.result is an array before filtering
         const productsArray = Array.isArray(allProducts?.result) ? allProducts.result : [];
-    
+
         // Filter products that match the same title
         const matchingProducts = productsArray.filter(p => p.product_title === productTitle);
-    
+
         // Extract frame and lens colors
         const colors = matchingProducts.map(p => ({
             productId: p.product_id,  // ✅ Include product ID
             frameColor: p.frameColor || "#FFFFFF", // Default White if null
             lensColor: p.lenshColor || "#000000",  // Default Black if null
         }));
-    
+
         return colors;
     };
-    
-    
+
+
 
     const product_price = item?.result?.product_price - (item?.result?.product_price * item?.result?.discount / 100)
 
@@ -340,27 +339,44 @@ const ProductDetails = () => {
                                 <button className="quantity-btn">+</button> */}
                                 {/* <button className="add-to-cart-btn"><img src={tdesign} alt="tdesign" />ADD TO CART</button> */}
                             </div>
+
                             <div className="cart-controls" style={{ marginBottom: "5px" }}>
-                                <button className="buy-now-btn" onClick={handleDirectPayment}>BUY NOW</button>
-                                <button className="buy-now-btn" onClick={handlePowerClick}>ADD POWER</button>
+                                <button
+                                    className="buy-now-btn"
+                                    onClick={handleDirectPayment}
+                                    disabled={!selectedColor} // Disable if selectedColor is null
+                                    style={{ opacity: !selectedColor ? 0.5 : 1, cursor: !selectedColor ? "not-allowed" : "pointer" }}
+                                >
+                                    BUY NOW
+                                </button>
+                                <button
+                                    className="buy-now-btn"
+                                    onClick={handlePowerClick}
+                                    disabled={!selectedColor} // Disable if selectedColor is null
+                                    style={{ opacity: !selectedColor ? 0.5 : 1, cursor: !selectedColor ? "not-allowed" : "pointer" }}
+                                >
+                                    ADD POWER
+                                </button>
                             </div>
+
 
                             <div className="technical-details">
                                 <h3>Technical Details</h3>
                                 <ul>
                                     <li><strong>Product ID:</strong> DCM413</li>
-                                    <li><strong>Model No:</strong> 54 mm / 16 mm / 145 mm</li>
-                                    <li><strong>Frame Size:</strong> 54 mm / 16 mm / 145 mm</li>
+                                    <li><strong>Frame Shape:</strong> 54 mm / 16 mm / 145 mm</li>
+                                    <li><strong>Frame Type:</strong> 54 mm / 16 mm / 145 mm</li>
                                     <li className="color-section">
                                         <strong>Frame Color: </strong>
+                                        {selectedColor ? (null) : (<p className='chose-color'>Please select color</p>)}
                                         <div className="color-options">
                                             {getColorsForProduct(item?.result?.product_title).length > 0 ? (
                                                 getColorsForProduct(item?.result?.product_title).map((colorObj) => (
-                                                    
+
                                                     <Link to={`/product-item/${colorObj.productId}`}>
                                                         <span
                                                             key={colorObj.productId}  // ✅ Using Product ID as key
-                                                            className={`color-box ${selectedColor?.frameColor === colorObj.frameColor && selectedColor?.lensColor === colorObj.lensColor ? "selected" : ""}`}
+                                                            className={`color-box ${selectedColor?.frameColor === colorObj.frameColor && selectedColor?.lensColor === colorObj.lensColor ? "selected-color" : ""}`}
                                                             title={`Frame: ${colorObj.frameColor}, Lens: ${colorObj.lensColor}`}
                                                             style={{
                                                                 background: `linear-gradient(to top, ${colorObj.frameColor} 50%, ${colorObj.lensColor} 50%)`,
@@ -381,6 +397,19 @@ const ProductDetails = () => {
                                             )}
                                         </div>
                                     </li>
+                                    {/* Show the remaining list items only when "See All" is clicked */}
+                                    {showAll && (
+                                        <>
+
+                                            <li><strong>Discount:</strong> 20%</li>
+                                            <li><strong>Frame Material:</strong> 54 mm / 16 mm / 145 mm</li>
+                                            <li><strong>Frame Description:</strong> 54 mm / 16 mm / 145 mm kkkkkkkkkk</li>
+                                            <li><strong>Lens Information:</strong> 54 mm / 16 mm / 145 mm</li>
+                                            <li><strong>Frame Material:</strong> 54 mm / 16 mm / 145 mm</li>
+                                            <li><strong>Model No:</strong> 54 mm / 16 mm / 145 mm</li>
+                                            <li><strong>Frame Size:</strong> 54 mm / 16 mm / 145 mm</li>
+                                        </>
+                                    )}
                                 </ul>
 
                                 {/* Display selected color */}

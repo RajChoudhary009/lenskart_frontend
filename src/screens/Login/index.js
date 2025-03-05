@@ -62,7 +62,7 @@ const Login = () => {
                     </form>
 
                 </div>
-                <div className='bg-login-rigth-cont'>X</div>
+                {/* <div className='bg-login-rigth-cont'>X</div> */}
             </div>
         </>
     )

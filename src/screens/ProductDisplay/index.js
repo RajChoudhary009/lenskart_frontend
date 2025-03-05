@@ -92,7 +92,8 @@ const ProductDisplay = () => {
   const [selectedFrameColor, setSelectedFrameColor] = useState([]);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(5000);
-  const [sortOption, setSortOption] = useState('Price: High to Low');
+  // const [sortOption, setSortOption] = useState('Price: High to Low');
+  const [sortOption, setSortOption] = useState('Price: All');
   const [wishlistItems, setWishlistItems] = useState([]);
   const [hoveredColor, setHoveredColor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -129,6 +130,7 @@ const ProductDisplay = () => {
     };
     fetchData();
   }, [category]);
+  console.log("category", category)
 
   const filterByCategory = (products, category) => {
     if (!category || category.toLowerCase() === "both") return products;
@@ -146,21 +148,8 @@ const ProductDisplay = () => {
         const frameType = product.frem_type?.toLowerCase() || "";
         const gender = product.gender?.toLowerCase() || "";
         const highlights = product.highlights?.toLowerCase() || "";
-        let frameColor = "";
-
-        // Handle frameColor as a JSON array
-        if (product.frameColor) {
-          try {
-            const parsedColors = JSON.parse(product.frameColor);
-            if (Array.isArray(parsedColors)) {
-              frameColor = parsedColors
-                .map((colorObj) => Object.keys(colorObj)[0].trim().toLowerCase())
-                .join(" ");
-            }
-          } catch (error) {
-            console.error("Error parsing frameColor:", product.frameColor, error);
-          }
-        }
+        const frameColor = product.frameColor?.toLowerCase() || "";
+        const lenshColor = product.lenshColor?.toLowerCase() || "";
 
         // Check if any keyword matches any product attributes
         keywords.forEach((keyword) => {
@@ -169,7 +158,8 @@ const ProductDisplay = () => {
             frameType.includes(keyword) ||
             gender.includes(keyword) ||
             highlights.includes(keyword) ||
-            frameColor.includes(keyword)
+            frameColor.includes(keyword) ||
+            lenshColor.includes(keyword)
           ) {
             matchCount++;
           }
@@ -360,14 +350,9 @@ const ProductDisplay = () => {
       if (selectedLensColor.length > 0) {
         filteredProducts = filteredProducts.filter((product) => {
           if (!product.lenshColor) return false;
-          try {
-            const lensColorsArray = JSON.parse(product.lenshColor);
-            const productLensColors = lensColorsArray.map((colorObj) => Object.keys(colorObj)[0].trim().toLowerCase());
-            return selectedLensColor.some((color) => productLensColors.includes(color.trim().toLowerCase()));
-          } catch (error) {
-            console.error("Error parsing lens_color:", product.lenshColor, error);
-            return false;
-          }
+          return selectedLensColor.some(
+            (color) => product.lenshColor.trim().toLowerCase() === color.trim().toLowerCase()
+          );
         });
       }
 
@@ -375,16 +360,12 @@ const ProductDisplay = () => {
       if (selectedFrameColor.length > 0) {
         filteredProducts = filteredProducts.filter((product) => {
           if (!product.frameColor) return false;
-          try {
-            const frameColorsArray = JSON.parse(product.frameColor);
-            const productFrameColors = frameColorsArray.map((colorObj) => Object.keys(colorObj)[0].trim().toLowerCase());
-            return selectedFrameColor.some((color) => productFrameColors.includes(color.trim().toLowerCase()));
-          } catch (error) {
-            console.error("Error parsing frameColor:", product.frameColor, error);
-            return false;
-          }
+          return selectedFrameColor.some(
+            (color) => product.frameColor.trim().toLowerCase() === color.trim().toLowerCase()
+          );
         });
       }
+
 
       // **Filter by Price Range**
       filteredProducts = filteredProducts.filter((product) => {
@@ -442,6 +423,7 @@ const ProductDisplay = () => {
               <LuArrowDownUp style={{ color: "#009688", fontSize: "14px" }} />
               <span className='active' style={{ fontSize: "13px" }}>SORT BY:</span>
               <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+              <option>Price: All item</option>
                 <option>Price: High to Low</option>
                 <option>Price: Low to High</option>
                 <option>Newest First</option>
@@ -767,7 +749,7 @@ const ProductDisplay = () => {
                     <strong className="product-title">{product.highlights}</strong>
                     <div className="product-discount">
                       <p className="discount-title">₹{product.product_price}</p>
-                      <span className="discount-off">({product.discount}% OFF)</span>
+                      <span className="discount-off">({product.discount}% OFF)<span className='out-of-stock' style={{ color: "#e8a617", textTransform: "uppercase", fontSize:"9px"}}>For {product.gender}</span></span>
                     </div>
                     <p className="product-price1">
                       ₹{(product.product_price - (product.product_price * product.discount / 100)).toFixed(0)}/-

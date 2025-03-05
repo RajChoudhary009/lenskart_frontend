@@ -6,6 +6,7 @@ import { GlobleInfo } from '../../App';
 import { BsBagHeart, BsBagHeartFill } from "react-icons/bs";
 // import { CiHeart } from "react-icons/ci";
 import { FaHeart, FaShoppingCart, FaPhone } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 // import { IoBagOutline } from "react-icons/io5";
 import { ImFire } from "react-icons/im";
 import dceyewrLogo from '../../Assets/images/dceyewr-logo-no-text.png';
@@ -259,11 +260,21 @@ const Header = () => {
     setIsPopupOpen(true);  // Toggle popup
   };
 
-  useEffect(() => {
+  const onHandleSearch = () => {
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+
     if (query) {
       navigate(`/product-display/${query}`, { replace: true });
     }
-  }, [query, navigate]);
+  }
+
+  // useEffect(() => {
+  //   if (query) {
+  //     navigate(`/product-display/${query}`, { replace: true });
+  //   }
+  // }, [query, navigate]);
 
   return (
     <div className='header-bg-container'>
@@ -284,18 +295,18 @@ const Header = () => {
 
           {/* Search Bar */}
           <div className="search-container">
-            {/* <div className='search-home-main'> */}
-            <input
-              type="text"
-              placeholder="What are you looking for?"
-              className="search-input"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => setShowDropdown(true)}
-              onBlur={() => setTimeout(() => setShowDropdown(false), 2000)}
-            />
-            {/* <FaSearch className="icon" onClick={handleSearch} />
-          </div> */}
+            <div className='search-home-main'>
+              <input
+                type="search"
+                placeholder="What are you looking for?"
+                className="search-input"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setShowDropdown(true)}
+                onBlur={() => setTimeout(() => setShowDropdown(false), 2000)}
+              />
+              <FaSearch className="search-icon" onClick={() => onHandleSearch()} size={28} />
+            </div>
 
             {showDropdown && (
               <div className="search-dropdown">
@@ -318,12 +329,12 @@ const Header = () => {
             {/* <img src={wishlist} alt="wishlist" className='wishlist-image' /> */}
             {/* <BsBagHeart className="icon" size={20} style={{color:"#97bce3"}} onClick={() => setIsWishlistOpen(true)} /> */}
             <div className='wishlist-container'>
-            {wishlistItems.length > 0 ? (
-               <img src={wishlist} alt="wishlist" className='wishlist-image' style={{width:"25px"}} />
+              {wishlistItems.length > 0 ? (
+                <img src={wishlist} alt="wishlist" className='wishlist-image' style={{ width: "25px" }} />
               ) : (
                 <FaRegHeart className="icon" size={20} style={{ color: "#97bce3" }} onClick={() => setIsWishlistOpen(true)} />
               )}
-             
+
               {wishlistItems.length > 0 ? (
                 <div className="wishlist-badge">
                   {wishlistCount}</div>

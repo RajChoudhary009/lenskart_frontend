@@ -71,7 +71,7 @@ const Otpvarify = props => {
         <>
             {displayOtp && displayStoreOtp && (
                 <div className="display-otp">
-                    <h1 className="display-otp-text" style={{ color: "#fff" }}>{displayStoreOtp}</h1>
+                    <h1 className="display-otp-text" style={{ color: "#000" }}>{displayStoreOtp}</h1>
                 </div>
             )}
 
@@ -81,7 +81,7 @@ const Otpvarify = props => {
                         <p className='varify-description'>Please enter the OTP we've sent you on your mobile number</p>
                         <p className='varify-description-num'>9110189245 <Link to="/login" className="edit">Edit</Link></p>
                         <input
-                            type="number"
+                            type="text"
                             className='otp-input'
                             name="otp"
                             id="otp"
@@ -93,7 +93,7 @@ const Otpvarify = props => {
                         <button className='continue-btn' type="submit">Verify</button>
                     </form>
                 </div>
-                <div className='bg-login-rigth-cont'>X</div>
+                {/* <div className='bg-login-rigth-cont'>X</div> */}
             </div>
         </>
     )

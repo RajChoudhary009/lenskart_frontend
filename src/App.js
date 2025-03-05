@@ -26,7 +26,7 @@
 //     setWishlistCount(count);
 //     // console.log("Updated count from child:", count);
 //   };
-  
+
 //   const updateProductCount = () => {
 //     try {
 //       const cartItemsFromLocalStorage = JSON.parse(localStorage.getItem('cart')) || [];
@@ -84,7 +84,7 @@
 //           <Route exact path="/product-display/:category" element={<ProductDisplay />} />
 //           <Route exact path="/product-item/:product_id" element={<ProductDetails />} />
 //           <Route path="/ChekOutPage" element={<ChekOutPage />} />
-          
+
 //         </Routes>
 //       </BrowserRouter>
 //     </GlobleInfo.Provider>
@@ -111,7 +111,7 @@ export const GlobleInfo = createContext();
 function App() {
   const [productCount, setProductCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
-  const [checkoutData, setCheckoutData] = useState({});
+  const [checkoutData, setCheckoutData] = useState({}); // Store checkout data
 
   // Update cart & wishlist count
   const updateCounts = () => {
@@ -144,8 +144,14 @@ function App() {
     };
   }, []);
 
+  // Save checkout data
+  const saveCheckoutData = (data) => {
+    setCheckoutData(data);
+    console.log("Checkout Data Saved:", data); // Debugging purposes
+  };
+
   return (
-    <GlobleInfo.Provider value={{ updateCounts, productCount, wishlistCount, checkoutData, setCheckoutData }}>
+    <GlobleInfo.Provider value={{ updateCounts, productCount, wishlistCount, checkoutData, saveCheckoutData }}>
       <BrowserRouter>
         <Routes>
           <Route exact path="/" element={<Home />} />

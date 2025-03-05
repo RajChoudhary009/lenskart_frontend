@@ -206,3 +206,7 @@
     max-width: 100%;
 }
 
+.link-tag{
+    text-decoration: none;
+    color: white;
+}
