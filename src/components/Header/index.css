@@ -687,7 +687,8 @@ h3 {
   background: #f0f0f0;
 }
 
-/* Cart Container */
+
+/* add to Cart Container */
 .cart-container {
   position: relative;
 }
@@ -716,4 +717,81 @@ h3 {
 
 .wishlist-image {
   width: 30px;
+}
+
+.cart-popup {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 350px;
+  height: 100%;
+  background: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease-in-out;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.cart-popup.open {
+  right: 0;
+}
+
+.cart-popup-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.close-btn {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.cart-items {
+  margin-top: 20px;
+  overflow-y: auto;
+  max-height: 650px;
+}
+
+.cart-item-card {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.cart-item-image {
+  width: 100px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-right: 10px;
+  border-left: 1px solid #000;
+}
+.cart-item-details{
+  padding-left: 7px;
+}
+
+.cart-item-details h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.cart-item-details p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.empty-cart {
+  text-align: center;
+  font-size: 16px;
+  color: #888;
+}
+.remove-btn{
+ margin-left: auto;
+  border: none;
 }

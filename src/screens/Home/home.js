@@ -1,30 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
+import axios from "axios";
+import { SERVER_API_URL } from '../../server/server';
 
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import yourPerfectPairBanner from '../../Assets/images/your-perfect-pair-banner.webp';
-import crystalClearVisionBanner from '../../Assets/images/crystal-clear-vision-banner.webp';
-import textBanner from '../../Assets/images/text_banner.webp';
+// import yourPerfectPairBanner from '../../Assets/images/your-perfect-pair-banner.webp';
+// import crystalClearVisionBanner from '../../Assets/images/crystal-clear-vision-banner.webp';
+// import textBanner from '../../Assets/images/text_banner.webp';
 import aviatorVector from '../../Assets/images/goggles/aviator-vector.webp';
 import catsEye from '../../Assets/images/goggles/cats-eye.webp';
 import rectangleVector from '../../Assets/images/goggles/rectangle-vector.webp';
 import roundVector from '../../Assets/images/goggles/round-vector.webp';
 import squareVector from '../../Assets/images/goggles/square-vector.webp';
 import wayfarerVector from '../../Assets/images/goggles/wayfarer-vector.webp';
-import heliusGlasses from '../../Assets/images/Helius.webp'; // Add your Helius Eyewear image
+// import heliusGlasses from '../../Assets/images/Helius.webp'; // Add your Helius Eyewear image
 import pawerGlass from '../../Assets/images/power_glass.png'
 import computerGlassMen from '../../Assets/images/computer-glass-men.webp'
 import sunglasses from '../../Assets/images/sunglasses-image.webp'
 import prescription from '../../Assets/images/prescription-glasses.webp'
 import zeroPawer from '../../Assets/images/zero-power-glasses.webp'
-import lykosEyewear from '../../Assets/images/lykos-banner.webp'
+// import lykosEyewear from '../../Assets/images/lykos-banner.webp'
 import forMenSection from '../../Assets/images/for-men-section.webp'
 import forWomenSection from '../../Assets/images/for-women-section.webp'
 import forChildSection from '../../Assets/images/for-child-section.webp'
-import stayAheadInStyleBanner from '../../Assets/images/stay-ahead-in-style-banner.webp'
-import Blinkers from '../../Assets/images/Blinkers.webp'
-import EyePoppin from '../../Assets/images/EyePoppin.webp'
+// import stayAheadInStyleBanner from '../../Assets/images/stay-ahead-in-style-banner.webp'
+// import Blinkers from '../../Assets/images/Blinkers.webp'
+// import EyePoppin from '../../Assets/images/EyePoppin.webp'
 
 // import prog11 from '../../Assets/images/prog11.webp'
 // import a2 from '../../Assets/images/a2.webp'
@@ -43,6 +45,52 @@ import e2 from '../../Assets/images/sunglasses6.png'
 import './home.css';
 
 const Home = () => {
+  const [bannerData, setBannerData] = useState([])
+  const [brandHeading, setBrandHeading] = useState([]);
+  console.log("brandHeading1", brandHeading)
+
+  useEffect(() => {
+    const fetchBannerData = async () => {
+      try {
+        const response = await axios.get(`${SERVER_API_URL}/api/carousel/all`);
+        console.log("Carousel Data:", response.data);
+        setBannerData(response.data)
+        // Handle response data (e.g., set state)
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchBannerData(); // Call the async function
+    fetchBrandHeading();
+  }, []); // Empty dependency array ensures it runs once
+
+  const fetchBrandHeading = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/brand`);
+      setBrandHeading(response.data.result);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  // Find banners by their `exact_place`
+  const yourPerfectPairBanner = bannerData?.length > 0 ? bannerData.find(b => b.place === "Group_A" && b.exact_place === "left")?.image_url : null;
+
+  const crystalClearVisionBanner = bannerData?.length > 0 ? bannerData.find(b => b.place === "Group_A" && b.exact_place === "right")?.image_url : null;
+
+  const textBanner = bannerData?.length > 0 ? bannerData.find(b => b.section === 'section_2' && b.place === "Group_A" && b.exact_place === "left")?.image_url : null;
+
+  const heliusGlasses = bannerData?.length > 0 ? bannerData.find(b => b.section === 'section_1' && b.place === "Group_B" && b.exact_place === "center_poster")?.image_url : null;
+
+  const lykosEyewear = bannerData?.length > 0 ? bannerData.find(b => b.section === 'section_3' && b.place === "Group_B" && b.exact_place === "center_poster")?.image_url : null;
+
+  const stayAheadInStyleBanner = bannerData?.length > 0 ? bannerData.find(b => b.section === 'section_2' && b.place === "Group_C" && b.exact_place === "center_poster")?.image_url : null;
+
+  const Blinkers = bannerData?.length > 0 ? bannerData.find(b => b.section === 'section_3' && b.place === "Group_C" && b.exact_place === "center_poster")?.image_url : null;
+
+  const EyePoppin = bannerData?.length > 0 ? bannerData.find(b => b.section === 'section_4' && b.place === "Group_C" && b.exact_place === "center_poster")?.image_url : null;
+
   return (
     <>
       <Header />
@@ -114,7 +162,7 @@ const Home = () => {
                   <p>Starting from ₹2000</p>
                 </div>
               </div>
-            </div>            
+            </div>
 
             <div class="card-container">
               <div class="card">
@@ -135,11 +183,25 @@ const Home = () => {
           <Link to="#">
             <div className='your-perfect-pair'>
               <div className='yourPerfectPairBanner-container'>
-                <img src={yourPerfectPairBanner} className='yourPerfectPairBanner' alt='Your Perfect Pair Banner' />
+                {/* <img src={yourPerfectPairBanner} className='yourPerfectPairBanner' alt='Your Perfect Pair Banner' /> */}
+                {yourPerfectPairBanner && (
+                  <img
+                    src={`${SERVER_API_URL}/uploads/${yourPerfectPairBanner}`} // Ensure correct URL
+                    className="yourPerfectPairBanner"
+                    alt="Your Perfect Pair Banner"
+                  />
+                )}
               </div>
 
               <div className='crystalClearVisionBanner-container'>
-                <img src={crystalClearVisionBanner} className='crystalClearVisionBanner' alt='Crystal Clear Vision Banner' />
+                {/* <img src={crystalClearVisionBanner} className='crystalClearVisionBanner' alt='Crystal Clear Vision Banner' /> */}
+                {crystalClearVisionBanner && (
+                  <img
+                    src={`${SERVER_API_URL}/uploads/${crystalClearVisionBanner}`} // Ensure correct URL
+                    className="crystalClearVisionBanner"
+                    alt="Crystal Clear Vision Banner"
+                  />
+                )}
               </div>
             </div>
           </Link>
@@ -147,7 +209,8 @@ const Home = () => {
           {/* Glasses Categories Section */}
           <div className="glasses-category-container">
             <div className="category-banner">
-              <img src={textBanner} className='text-banner' alt={textBanner} />
+              <img src={`${SERVER_API_URL}/uploads/${textBanner}`} className='text-banner' alt={textBanner} />
+
             </div>
 
             <div className="categories-grid">
@@ -178,15 +241,18 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Helius Eyewear Section */}
+          {/* Helius Eyewear Section Group C*/}
 
           <div className='single-banner-container'>
             <div className="helius-text">
-              <h2 className='Helius-Eyewear'>Helius Eyewear</h2>
-              <hr className='hr-line' />
+              {brandHeading
+                .filter((heading) => heading.section === "section_1")
+                .map((heading, index) => (
+                  <h2 key={index} className="Helius-Eyewear">{heading.brand_name}</h2>
+                ))}
+              <hr className="hr-line" />
             </div>
-
-            <Link to={`/product-display/${"Helius Glasses"}`}> <img src={heliusGlasses} alt="Helius Glasses" className="helius-glasses-image" /></Link>
+            <Link to={`/product-display/${"Helius Glasses"}`}> <img src={`${SERVER_API_URL}/uploads/${heliusGlasses}`} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
 
 
@@ -217,12 +283,17 @@ const Home = () => {
             </div>
           </div>
 
+          {/* Group D */}
           <div className='eyeglasses-container'>
-            <h1 className='eyeglasses-title'>Eyeglasses for Every Occasion</h1>
+            {brandHeading
+              .filter((heading) => heading.section === "section_2")
+              .map((heading, index) => (
+                <h2 key={index} className='eyeglasses-title'>{heading.brand_name}</h2>
+              ))}
             <hr className='hr-line' />
             <div className='eyeglasses-grid'>
 
-              {/* Computer Glasses */}
+              {/* Computer Glasses*/}
               <div className='eyeglasses-card' style={{ backgroundImage: `url(${computerGlassMen})` }}>
                 <div className='eyeglasses-info'>
                   <h2 className='eyeglasses-card-title'>Computer Glasses</h2>
@@ -261,16 +332,20 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Helius Eyewear Section */}
+          {/* Helius Eyewear Section  Group E*/}
           <div className='single-banner-container'>
             <div className="helius-text">
-              <h2 className='Helius-Eyewear'>Lykos Eyewear</h2>
+              {brandHeading
+                .filter((heading) => heading.section === "section_3")
+                .map((heading, index) => (
+                  <h2 key={index} className='Helius-Eyewear'>{heading.brand_name}</h2>
+                ))}
               <hr className='hr-line' />
             </div>
-            <Link to={`/product-display/${"Square"}`}><img src={lykosEyewear} alt="Helius Glasses" className="helius-glasses-image" /></Link>
+            <Link to={`/product-display/${"Square"}`}><img src={`${SERVER_API_URL}/uploads/${lykosEyewear}`} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
-          {/* Eyeglasses-container */}
 
+          {/* Eyeglasses-container */}
           <div className='Eyeglasses-container'>
             <div className='Eyeglasses-container-main'>
               <h1 className='Eyeglasses-text'>Eyeglasses</h1>
@@ -296,8 +371,13 @@ const Home = () => {
             </div>
           </div>
 
+          {/* Group F */}
           <div className='eyeglasses-container'>
-            <h1 className='eyeglasses-title'>Eyeglasses for Every Occasion</h1>
+            {brandHeading
+              .filter((heading) => heading.section === "section_4")
+              .map((heading, index) => (
+                <h2 key={index} className='eyeglasses-title'>{heading.brand_name}</h2>
+              ))}
             <hr className='hr-line' />
             <div className='eyeglasses-grid eyeglasses-grid1'>
 
@@ -331,13 +411,17 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Lykos Eyewear Section */}
+          {/* Lykos Eyewear Section Group G */}
           <div className='single-banner-container'>
             <div className="helius-text">
-              <h2 className='Helius-Eyewear'>Lykos Eyewear</h2>
+              {brandHeading
+                .filter((heading) => heading.section === "section_5")
+                .map((heading, index) => (
+                  <h2 key={index} className='Helius-Eyewear'>{heading.brand_name}</h2>
+                ))}
               <hr className='hr-line' />
             </div>
-            <Link to="/product-display"> <img src={stayAheadInStyleBanner} alt="Helius Glasses" className="helius-glasses-image" /></Link>
+            <Link to="/product-display"> <img src={`${SERVER_API_URL}/uploads/${stayAheadInStyleBanner}`} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
 
           {/* Eyeglasses-container */}
@@ -366,13 +450,17 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Blinkers Eyeglasses Section */}
+          {/* Blinkers Eyeglasses Section Group H*/}
           <div className='single-banner-container'>
             <div className="helius-text">
-              <h2 className='Helius-Eyewear'>Blinkers Eyeglasses</h2>
+              {brandHeading
+                .filter((heading) => heading.section === "section_6")
+                .map((heading, index) => (
+                  <h2 key={index} className='Helius-Eyewear'>{heading.brand_name}</h2>
+                ))}
               <hr className='hr-line' />
             </div>
-            <Link to={`/product-display/${"Square"}`}><img src={Blinkers} alt="Helius Glasses" className="helius-glasses-image" /></Link>
+            <Link to={`/product-display/${"Square"}`}><img src={`${SERVER_API_URL}/uploads/${Blinkers}`} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
 
           {/* Eyeglasses-container */}
@@ -401,13 +489,17 @@ const Home = () => {
             </div>
           </div>
 
-          {/* EyePoppin Eyeglasses Section */}
+          {/* EyePoppin Eyeglasses Section Group I*/}
           <div className='single-banner-container'>
             <div className="helius-text">
-              <h2 className='Helius-Eyewear'>EyePoppin Eyeglasses</h2>
+              {brandHeading
+                .filter((heading) => heading.section === "section_7")
+                .map((heading, index) => (
+                  <h2 key={index} className='Helius-Eyewear'>{heading.brand_name}</h2>
+                ))}
               <hr className='hr-line' />
             </div>
-            <Link to={`/product-display/${"Square"}`}> <img src={EyePoppin} alt="Helius Glasses" className="helius-glasses-image" /></Link>
+            <Link to={`/product-display/${"Square"}`}> <img src={`${SERVER_API_URL}/uploads/${EyePoppin}`} alt="Helius Glasses" className="helius-glasses-image" /></Link>
           </div>
 
           {/* Eyeglasses-container */}

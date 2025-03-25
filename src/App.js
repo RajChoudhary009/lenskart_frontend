@@ -103,6 +103,7 @@ import Otpvarify from "./screens/Otpvarify";
 import LensPricing from './screens/LensPricing';
 import Testing from './screens/Testing';
 import ChekOutPage from './screens/ChekOutPage';
+import FaqPage from './screens/FaqPage'
 
 import "./App.css";
 
@@ -161,7 +162,8 @@ function App() {
           <Route exact path="/testing" element={<Testing />} />
           <Route exact path="/product-display/:category" element={<ProductDisplay />} />
           <Route exact path="/product-item/:product_id" element={<ProductDetails />} />
-          <Route path="/ChekOutPage" element={<ChekOutPage />} />
+          <Route exact path="/ChekOutPage" element={<ChekOutPage />} />
+          <Route exact path="/Faq-page" element={<FaqPage />} />
         </Routes>
       </BrowserRouter>
     </GlobleInfo.Provider>

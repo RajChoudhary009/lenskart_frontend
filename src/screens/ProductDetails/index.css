@@ -40,9 +40,26 @@
 }
 
 .main-image {
+    position: relative;
     width: 100%;
     height: 400px;
     background: #ddd;
+}
+.share-container{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 5px;
+    top: 3px;
+}
+.share-icon{
+    /* font-size: 40px; */
+    background-color: #fff;
+    width: 35px;
+    height: 35px;
+    padding: 7px;
+    margin-bottom: 5px;
+    border-radius: 100%;
 }
 
 .larg-image {
@@ -636,4 +653,134 @@
 
 .selected-color{
     border: 5px solid rgb(227, 158, 158) !important;
+}
+
+
+
+/* ====== Popup Modal Styling ====== */
+/* .image-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.4s ease-in-out forwards;
+} */
+
+.image-popup-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* background: rgba(0, 0, 0, 0.8); */
+    background-color: #000;
+    display: flex;
+    z-index: 1000;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: popupFadeZoom 0.5s ease-in-out forwards;
+}
+
+/* 🎬 Unique Popup Animation */
+@keyframes popupFadeZoom {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.05) translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.image-popup {
+    position: relative;
+    /* max-width: 1200px; */
+    /* width: 70%; */
+    /* background: white; */
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    animation: scaleUp 0.4s ease-out forwards;
+}
+
+.popup-image {
+    /* width: 100%; */
+    width: 1300px;
+    height: 75vh;
+    border-radius: 8px;
+}
+
+/* ====== Close Button ====== */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    /* color: red; */
+    color: #000;
+    transition: transform 0.2s ease-in-out;
+}
+.close-btn:hover {
+    /* transform: rotate(90deg) scale(1.2); */
+}
+
+
+
+/* ====== Navigation Buttons ====== */
+.prev-btn1,
+.next-btn1 {
+    position: absolute;
+    top: 50%;
+    /* transform: translateY(-50%); */
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    /* background: rgba(88, 168, 140, 0.6); */
+    background-color: transparent;
+    color: #000;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    /* transition: transform 0.4s ease-in-out, background 0.3s; */
+}
+
+/* .prev-btn1:hover,
+.next-btn1:hover {
+    background: rgba(26, 143, 104, 0.6);
+    animation: rotate360 0.4s linear;
+} */
+
+/* 🌀 Keyframes for Smooth Rotation */
+/* @keyframes rotate360 {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+} */
+.prev-btn1 {
+    left: 10px;
+}
+
+.next-btn1 {
+    right: 10px;
 }

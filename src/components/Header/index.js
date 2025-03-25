@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import { SERVER_API_URL } from '../../server/server';
 import { GlobleInfo } from '../../App';
-// import { FaShoppingCart } from 'react-icons/fa'; // Importing icons
+import axios from "axios";
 import { BsBagHeart, BsBagHeartFill } from "react-icons/bs";
 // import { CiHeart } from "react-icons/ci";
 import { FaHeart, FaShoppingCart, FaPhone } from "react-icons/fa";
@@ -241,12 +241,43 @@ const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
-
+  const [cartListItems, setCartlistItems] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [categoriesData, setCategoriesData] = useState([]);
+  
   // Load wishlist items from localStorage when the popup opens
   useEffect(() => {
     const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     setWishlistItems(storedWishlist);
   }, [isWishlistOpen]);
+
+  // Load cart items from localStorage when the popup opens
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCartlistItems(storedCart);
+  }, [isCartOpen]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(`${SERVER_API_URL}/api/categories/all`);
+      setCategoriesData(response.data);
+  
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  useEffect(() => {
+    fetchCategories()
+  }, []);
+
+
+  // Function to remove an item from the cart
+  const removeFromCart = (id) => {
+    const updatedCart = cartListItems.filter((item) => item.product_id !== id);
+    setCartlistItems(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart)); // Update localStorage
+  };
+
 
   // Function to remove an item from the wishlist
   const removeFromWishlist = (id) => {
@@ -268,6 +299,10 @@ const Header = () => {
     if (query) {
       navigate(`/product-display/${query}`, { replace: true });
     }
+  }
+
+  const openFaq = () => {
+    navigate("/Faq-page", { replace: true });
   }
 
   // useEffect(() => {
@@ -346,35 +381,30 @@ const Header = () => {
               <FaShoppingCart className="icon" size={20} />
               <div className="cart-badge">{productCount}</div>
             </div>
-            <span>Cart</span>
+            <span onClick={() => setIsCartOpen(true)}>Cart</span>
           </div>
         </div>
 
         {/* Navigation Links */}
         <div className='navbar-main-bottom'>
           <div className="navbar-bottom">
-            <span className="nav-link" onClick={() => togglePopup('Power Glasses')}>
-              Power Glasses
-            </span>
-            <span className="nav-link" onClick={() => togglePopup('Sunglasses')}>
-              Sunglasses
-            </span>
-            <span className="nav-link" onClick={() => togglePopup('Screen Saver')}>
-              Screen Saver
-            </span>
-            <span className="nav-link" onClick={() => togglePopup('Contact Lenses')}>
-              Contact Lenses
-            </span>
-            <span className="nav-link nav-link-modifiy" onClick={() => togglePopup('Kids Glasses')}>
-              Kids Glasses
-            </span>
+            {categoriesData.length > 0 &&
+              categoriesData.map((category, index) => (
+                <span
+                  key={index}
+                  className={`nav-link`}
+                  onClick={() => togglePopup(category.categories_name)}
+                >
+                  {category.categories_name}
+                </span>
+              ))}
           </div>
 
           {/* Action Buttons */}
           <div className="navbar-buttons">
             <button className="btn-tryon1"> 3D TRY ON</button>
             <button className="btn-blu">BLU</button>
-            <button className="btn-gold">GOLD MAX</button>
+            <button className="btn-gold" onClick={() => openFaq()}>GOLD MAX</button>
           </div>
         </div>
       </nav>
@@ -456,26 +486,6 @@ const Header = () => {
 
       {/* Wishlist Popup */}
       {isWishlistOpen && (
-        // <div className="wishlist-popup">
-        //   <div className="wishlist-header">
-        //     <h3>My Wishlist</h3>
-        //     <button className="close-btn" onClick={() => setIsWishlistOpen(false)}>X</button>
-        //   </div>
-        //   <div className="wishlist-content">
-        //     {wishlistItems.length > 0 ? (
-        //       wishlistItems.map((item) => (
-        //         <div key={item.id} className="wishlist-item">
-        //           <img src={`${SERVER_API_URL}/${item?.product_thumnail_img}`} alt={item.product_title} />
-        //           <p>{item.product_title}</p>
-        //           <p>₹{item.product_price}</p>
-        //         </div>
-        //       ))
-        //     ) : (
-        //       <p>No items in wishlist</p>
-        //     )}
-        //   </div>
-        // </div>
-
         <div className="wishlist-popup">
           <div className="wishlist-header">
             <h3>My Wishlist</h3>
@@ -488,7 +498,9 @@ const Header = () => {
                   <img src={`${SERVER_API_URL}/${item?.product_thumnail_img}`} alt={item.product_title} />
                   <div className="wishlist-info">
                     <p className="wishlist-product-title">{item.product_title}</p>
-                    <p className="wishlist-product-price">₹{item.product_price}</p>
+                    <p className="wishlist-product-price">
+                      ₹{(item.product_price - (item.product_price * item.discount / 100)).toFixed(0)}/-
+                    </p>
                   </div>
                   <button className="delete-btn" onClick={() => removeFromWishlist(item.product_id)}>🗑</button>
                 </div>
@@ -500,6 +512,32 @@ const Header = () => {
         </div>
       )}
 
+      {/* cart popup */}
+      <div className={`cart-popup ${isCartOpen ? "open" : ""}`}>
+        <div className="cart-popup-content">
+          <button className="close-btn" onClick={() => setIsCartOpen(false)}>×</button>
+          <h2>Shopping Cart</h2>
+
+          {cartListItems.length > 0 ? (
+            <div className="cart-items">
+              {cartListItems.map((item, index) => (
+                <div key={index} className="cart-item-card">
+                  <img className="cart-item-image" src={`${SERVER_API_URL}/${item?.product_thumnail_img}`} alt={item.product_title} />
+                  <div className="cart-item-details">
+                    <h4>{item.name}</h4>
+                    <p>{item.product_title}</p>
+                    <p> ₹{(item.product_price - (item.product_price * item.discount / 100)).toFixed(0)}/-</p>
+                    <p>Quantity: {item.quantity}</p>
+                  </div>
+                  <button className="remove-btn" onClick={() => removeFromCart(item.product_id)}>🗑</button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="empty-cart">Your cart is empty.</p>
+          )}
+        </div>
+      </div>
 
       {/* Popup */}
       {isPopupOpen && (

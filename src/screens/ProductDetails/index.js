@@ -3,10 +3,13 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { SERVER_API_URL } from '../../server/server';
 import axios from 'axios'; // Import Axios
 import { GlobleInfo } from '../../App';
-// import { useNavigate } from 'react-router-dom';
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
 import { jwtDecode } from "jwt-decode";
 import tdesign from '../../Assets/images/tdesign_cart.png';
 import { ColorRing } from 'react-loader-spinner';
+import { IoShareSocialOutline } from "react-icons/io5";
+import { IoMdHeartEmpty } from "react-icons/io";
 import "./index.css"; // Import the corresponding CSS file
 import Header from "../../components/Header";
 
@@ -72,6 +75,8 @@ const ProductDetails = () => {
     const [showAll, setShowAll] = useState(false);
     const [selectedColor, setSelectedColor] = useState(null); // State for selected color
 
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
         if (item?.result?.frameColor && item?.result?.lenshColor) {
@@ -200,6 +205,37 @@ const ProductDetails = () => {
         }
     };
 
+    const addToCart = (item) => {
+        // Extract product details from `result`
+        const productDetails = item.result;
+
+        // Get existing cart items from localStorage
+        const existingCartItems = JSON.parse(localStorage.getItem("cart")) || [];
+
+        // Find if the item already exists in the cart
+        const itemIndex = existingCartItems.findIndex(cartItem => cartItem.product_id === productDetails.product_id);
+
+        if (itemIndex !== -1) {
+            // If the item exists, increase its quantity
+            existingCartItems[itemIndex].quantity = Number(existingCartItems[itemIndex].quantity) || 1;
+            existingCartItems[itemIndex].quantity += 1;
+        } else {
+            // If item does not exist, add it with quantity = 1
+            const newItem = {
+                ...productDetails,
+                quantity: 1
+            };
+            existingCartItems.push(newItem);
+        }
+
+        // Update localStorage with new cart data
+        localStorage.setItem("cart", JSON.stringify(existingCartItems));
+
+        // Alert user
+        alert(`${productDetails.product_title} added to cart successfully!`);
+    };
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -214,6 +250,7 @@ const ProductDetails = () => {
             }
         };
         fetchData();
+        setSelectedImage(null)
     }, [product_id]);
 
     useEffect(() => {
@@ -255,9 +292,33 @@ const ProductDetails = () => {
         return colors;
     };
 
+    const images = item?.result?.product_all_img || [];
 
+    const handleImageClickPopup = (index) => {
+        setCurrentIndex(index);
+        setSelectedImage(`${SERVER_API_URL}/${images[index]}`);
+        setIsPopupOpen(true);
+    };
+
+    const closePopup = () => {
+        setIsPopupOpen(false);
+    };
+
+    const handleNext = () => {
+        const nextIndex = (currentIndex + 1) % images.length;
+        setCurrentIndex(nextIndex);
+        setSelectedImage(`${SERVER_API_URL}/${images[nextIndex]}`);
+    };
+
+    const handlePrev = () => {
+        const prevIndex = (currentIndex - 1 + images.length) % images.length;
+        setCurrentIndex(prevIndex);
+        setSelectedImage(`${SERVER_API_URL}/${images[prevIndex]}`);
+    };
 
     const product_price = item?.result?.product_price - (item?.result?.product_price * item?.result?.discount / 100)
+
+
 
     return (
         <>
@@ -279,8 +340,68 @@ const ProductDetails = () => {
                         {/* Main Product Image Section */}
                         <div className="product-image-section">
                             <div className="main-image">
-                                <img className='larg-image' src={selectedImage ? selectedImage : `${SERVER_API_URL}/${item?.result?.product_thumnail_img}`} alt={`Large Image`} />
+                                <div className='share-container'>
+                                <IoMdHeartEmpty className='share-icon'/>
+                                    <IoShareSocialOutline className='share-icon'/>
+                                </div>
+                                <img className='larg-image' src={selectedImage ? selectedImage : `${SERVER_API_URL}/${item?.result?.product_thumnail_img}`} alt={`Large Image`} onClick={() => handleImageClickPopup(0)} />
                             </div>
+
+                            {/* ====== Popup Modal ====== */}
+                            {isPopupOpen && (
+                                <div className="image-popup-overlay">
+                                    <div className="image-popup">
+                                        <span className="close-btn" onClick={closePopup}>&times;</span>
+                                        <button className="prev-btn1" onClick={handlePrev}><IoIosArrowBack /></button>
+                                        <img className="popup-image" src={selectedImage} alt="Popup Large View" />
+                                        <button className="next-btn1" onClick={handleNext}><IoIosArrowForward /></button>
+                                    </div>
+                                    <div className="thumbnail-row" style={{ width:"50%", justifyContent:"space-around"}}>
+                                        {item?.result && item.result.product_all_img && (
+                                            <>
+                                                <div className="thumbnail">
+                                                    <img
+                                                        className='mini-image'
+                                                        src={`${SERVER_API_URL}/${item?.result?.product_all_img[0]}`}
+                                                        alt={`ImageItem ${product_id + 1}`}
+                                                        onClick={() => handleImageClick(`${SERVER_API_URL}/${item?.result?.product_all_img[0]}`)}
+                                                    />
+                                                </div>
+
+                                                <div className="thumbnail">
+                                                    <img
+                                                        className='mini-image'
+                                                        src={`${SERVER_API_URL}/${item?.result?.product_all_img[1]}`}
+                                                        alt={`ImageItem ${product_id + 1}`}
+                                                        onClick={() => handleImageClick(`${SERVER_API_URL}/${item?.result?.product_all_img[1]}`)}
+                                                    />
+                                                </div>
+
+                                                <div className="thumbnail">
+                                                    <img
+                                                        className='mini-image'
+                                                        src={`${SERVER_API_URL}/${item?.result?.product_all_img[2]}`}
+                                                        alt={`ImageItem ${product_id + 1}`}
+                                                        onClick={() => handleImageClick(`${SERVER_API_URL}/${item?.result?.product_all_img[2]}`)}
+                                                    />
+                                                </div>
+
+                                                <div className="thumbnail">
+                                                    <img
+                                                        className='mini-image'
+                                                        src={`${SERVER_API_URL}/${item?.result?.product_all_img[3]}`}
+                                                        alt={`ImageItem ${product_id + 1}`}
+                                                        onClick={() => handleImageClick(`${SERVER_API_URL}/${item?.result?.product_all_img[3]}`)}
+                                                    />
+                                                </div>
+
+                                            </>
+                                        )}
+
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="thumbnail-row">
                                 {item?.result && item.result.product_all_img && (
                                     <>
@@ -331,7 +452,7 @@ const ProductDetails = () => {
                             <h1 className="product-title1">{item?.result?.highlights} Stylish Sunglasses</h1>
                             <p className="product-price">₹{product_price.toFixed(0)}</p>
                             <button className="try-on-btn">TRY ON FACE</button>
-                            <button className="add-to-cart-btn"><img src={tdesign} style={{ marginRight: "10px" }} alt="tdesign" />ADD TO CART</button>
+                            <button className="add-to-cart-btn" onClick={() => addToCart(item)}><img src={tdesign} style={{ marginRight: "10px" }} alt="tdesign" />ADD TO CART</button>
 
                             <div className="cart-controls">
                                 {/* <button className="quantity-btn">-</button>
@@ -451,20 +572,31 @@ const ProductDetails = () => {
                             {item?.suggestedProducts?.length > 0 ? (
                                 item.suggestedProducts.map((frame) => (
                                     <div key={frame.id} className="frame-card">
-                                        <div className="frame-image">
-                                            {frame.product_thumnail_img ? (
-                                                <img src={`${SERVER_API_URL}/${frame.product_thumnail_img}`} alt={frame.name} style={{ maxWidth: "100%" }} />
-                                            ) : (
-                                                <div className="no-image">Image Not Available</div>
-                                            )}
+                                        <Link to={`/product-item/${frame.product_id}`}>
+                                            <div className="frame-image">
+                                                {frame.product_thumnail_img ? (
+                                                    <img src={`${SERVER_API_URL}/${frame.product_thumnail_img}`} alt={frame.name} style={{ maxWidth: "100%" }} />
+                                                ) : (
+                                                    <div className="no-image">Image Not Available</div>
+                                                )}
+                                            </div>
+                                        </Link>
+                                        <h3>{frame.product_title || "Unnamed Product"}</h3>
+
+                                        <div className="product-discount">
+                                            <p className="discount-title">₹{frame.product_price}</p>
+                                            <span className="discount-off">({frame.discount}% OFF)<span className='out-of-stock' style={{ color: "#e8a617", textTransform: "uppercase", fontSize: "9px" }}>For {frame.gender}</span></span>
                                         </div>
-                                        <h3>{frame.name || "Unnamed Product"}</h3>
-                                        <p className="frame-price">₹{frame.price || "N/A"}</p>
-                                        <p>Color: {frame.color || "N/A"}</p>
-                                        <p>Material: {frame.material || "N/A"}</p>
-                                        <button className="cart-btn">
+                                        <p className="product-price1">
+                                            ₹{(frame.product_price - (frame.product_price * frame.discount / 100)).toFixed(0)}/-
+                                        </p>
+
+                                        <p style={{ marginBottom: "8px" }}>{frame.highlights || "N/A"}</p>
+
+                                        <p>Material: {frame.material || "fiber"}</p>
+                                        {/* <button className="cart-btn">
                                             <img src={tdesign} alt="Add to Cart" />
-                                        </button>
+                                        </button> */}
                                     </div>
                                 ))
                             ) : (
