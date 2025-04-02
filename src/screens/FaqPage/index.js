@@ -18,18 +18,20 @@ const FAQAccordion = () => {
   };
 
   return (
-    <div className="faq-container">
-      <h2 className="faq-title">Frequently Asked Questions about Blue Light Glasses</h2>
-      <div className="faq-list">
-        {faqs.map((faq, index) => (
-          <div key={index} className="faq-item">
-            <button className="faq-question" onClick={() => toggleFAQ(index)}>
-              {faq.question}
-              <span className={`arrow ${openIndex === index ? "rotate" : ""}`}><IoIosArrowUp color={"#000"}/></span>
-            </button>
-            <div className={`faq-answer ${openIndex === index ? "open" : ""}`}>{faq.answer}</div>
-          </div>
-        ))}
+    <div className="faq-main-container">
+      <div className="faq-container">
+        {/* <h2 className="faq-title">Frequently Asked Questions about Blue Light Glasses</h2> */}
+        <div className="faq-list">
+          {faqs.map((faq, index) => (
+            <div key={index} className="faq-item">
+              <button className="faq-question" onClick={() => toggleFAQ(index)}>
+                {faq.question}
+                <span className={`arrow ${openIndex === index ? "rotate" : ""}`}><IoIosArrowUp /></span>
+              </button>
+              <div className={`faq-answer ${openIndex === index ? "open" : ""}`}>{faq.answer}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

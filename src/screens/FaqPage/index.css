@@ -1,7 +1,12 @@
+.faq-main-container{
+    background-color: black;
+    width: 90%;
+}
 .faq-container {
-    max-width: 80%;
+    width: 90%;
     margin: 40px auto;
     font-family: Arial, sans-serif;
+    background-color: #fff;
 }
 
 .faq-title {

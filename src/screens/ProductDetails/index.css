@@ -6,6 +6,27 @@
     margin: 0 auto;
 }
 
+.product-details-container-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.product-details-child-left {
+    width: 74%;
+    /* border: 1px solid red; */
+}
+
+.product-details-child-rigth {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+    padding-left: 10px;
+    width: 24%;
+    /* border: 1px solid black; */
+}
+
 .breadcrumb {
     color: #777;
     margin-bottom: 20px;
@@ -15,7 +36,7 @@
 .main-content {
     display: flex;
     justify-content: space-between;
-    width: 80%;
+    width: 98%;
     gap: 20px;
     margin-top: 10px;
 }
@@ -45,14 +66,16 @@
     height: 400px;
     background: #ddd;
 }
-.share-container{
+
+.share-container {
     display: flex;
     flex-direction: column;
     position: absolute;
     right: 5px;
     top: 3px;
 }
-.share-icon{
+
+.share-icon {
     /* font-size: 40px; */
     background-color: #fff;
     width: 35px;
@@ -91,12 +114,24 @@
     height: 120px;
 }
 
+.modified-thumbnail {
+    width: 122.5px;
+    height: 100px;
+}
+
+.modified-mini-image {
+    width: 120px;
+    height: 100px;
+}
 
 .product-info-section {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     width: 45%;
+    height: 69vh;
+    overflow-y: scroll;
+    /* Enables vertical scrolling */
 }
 
 @media screen and (max-width: 768px) {
@@ -112,7 +147,7 @@
     margin-bottom: 10px;
     text-align: left;
     text-shadow: 2px 2px 4px rgba(200, 181, 181, 0.5);
-    width: 80%;
+    /* width: 80%; */
 }
 
 .product-price {
@@ -172,7 +207,8 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 75%;
+    height: 35px;
+    /* width: 75%; */
     /* Make it take up the full width of its container */
     /* max-width: 170px; */
     /* Set a maximum width to keep the button within reasonable size */
@@ -198,11 +234,11 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     max-width: 100%;
     /* margin: auto; */
-    overflow-y: scroll;
-    height: 260px;
-  }
-  
-  .technical-details h3 {
+    /* overflow-y: scroll;
+    height: 260px; */
+}
+
+.technical-details h3 {
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 15px;
@@ -210,14 +246,14 @@
     text-align: center;
     border-bottom: 2px solid #009688;
     padding-bottom: 10px;
-  }
-  
-  .technical-details ul {
+}
+
+.technical-details ul {
     list-style: none;
     padding: 0;
-  }
-  
-  .technical-details li {
+}
+
+.technical-details li {
     /* display: flex; */
     font-size: 16px;
     padding: 8px 0;
@@ -226,23 +262,28 @@
     justify-content: space-between;
     align-items: center;
     color: #555;
-    flex-wrap: wrap; /* Ensures wrapping on small screens */
-    gap: 10px; /* Adds spacing for better readability */
-    width: 360px;
-  }
-  .see-all-btn {
+    flex-wrap: wrap;
+    /* Ensures wrapping on small screens */
+    gap: 10px;
+    /* Adds spacing for better readability */
+    width: 440px;
+}
+
+.see-all-btn {
     color: #009688;
     font-size: 10px;
     font-weight: bold;
     padding: 2px 7px;
     border: none;
-    border-radius: 3px; /* Rounded button */
+    border-radius: 3px;
+    /* Rounded button */
     cursor: pointer;
     margin-top: 6px;
     display: inline-block;
     width: auto;
     text-align: center;
-    box-shadow: 0px 4px 10px rgba(211, 159, 167, 0.4); /* Soft shadow */
+    box-shadow: 0px 4px 10px rgba(211, 159, 167, 0.4);
+    /* Soft shadow */
     transition: all 0.3s ease-in-out;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -260,8 +301,8 @@
 }
 
 
-  
-  /* If you
+
+/* If you
   .technical-details li:last-child {
     border-bottom: none;
   }
@@ -294,7 +335,7 @@
 /* Customer Reviews */
 .customer-reviews {
     margin-top: 40px;
-    width: 80%;
+    width: 100%;
 }
 
 .customer-reviews h2 {
@@ -336,7 +377,7 @@
 /* Suggested Frames */
 .suggested-frames {
     margin-top: 20px;
-    width: 80%;
+    width: 100%;
 }
 
 @media screen and (max-width: 768px) {
@@ -617,20 +658,23 @@
     border-radius: 10px;
     margin-bottom: 5px;
 }
-.color-section{
+
+.color-section {
     position: relative;
 }
-.chose-color{
+
+.chose-color {
     color: #009688;
     font-size: 8px;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 1px;
-    
+
     position: absolute;
     right: 8px;
     bottom: 0;
 }
+
 .color-box {
     width: 30px;
     height: 30px;
@@ -651,7 +695,7 @@
     transform: scale(1.1);
 } */
 
-.selected-color{
+.selected-color {
     border: 5px solid rgb(227, 158, 158) !important;
 }
 
@@ -698,10 +742,12 @@
         opacity: 0;
         transform: scale(0.8) translateY(-50px);
     }
+
     50% {
         opacity: 0.5;
         transform: scale(1.05) translateY(10px);
     }
+
     100% {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -738,6 +784,7 @@
     color: #000;
     transition: transform 0.2s ease-in-out;
 }
+
 .close-btn:hover {
     /* transform: rotate(90deg) scale(1.2); */
 }
@@ -783,4 +830,318 @@
 
 .next-btn1 {
     right: 10px;
+}
+
+/* share Popup */
+
+.share-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.share-popup {
+    background: white;
+    padding: 20px;
+    width: 450px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.share-product-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.share-product-img {
+    width: 200px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.share-brand {
+    color: #00aaff;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.share-title {
+    font-size: 16px;
+    text-align: left;
+}
+
+.copy-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.share-link {
+    width: 80%;
+    padding: 8px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.copy-btn {
+    width: 20%;
+    padding: 10px 15px;
+    border: none;
+    background: #24B6E6;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+.copy-btn:hover {
+    background: #1A8BB2;
+}
+
+.copy-btn.copied {
+    background: #27ae60;
+    color: white;
+}
+
+.copy-btn.copied::after {
+    content: "Copied!";
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.copy-btn:not(.copied)::after {
+    opacity: 0;
+}
+
+
+.share-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-icon {
+    font-size: 30px;
+    cursor: pointer;
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 100%;
+    color: #000;
+    transition: all .3s ease-in-out;
+    border: 1.5px solid #f3f3f3;
+}
+
+.social-icon:hover {
+    background: #24B6E6;
+    color: white;
+    border-color: #24B6E6;
+    transform: scale(1.1);
+    box-shadow: 0px 4px 10px rgba(36, 182, 230, 0.3);
+}
+
+/* card info */
+
+/* Container */
+.container {
+    font-family: Arial, sans-serif;
+}
+
+/* Color Title */
+.color-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* Selected Color */
+.selected-color {
+    font-weight: bold;
+    color: black;
+}
+
+/* Grid Layout */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* Ensures exactly 3 columns */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Product Card */
+.product-card {
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+    /* padding: 3px; */
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    background: white;
+    margin-bottom: 10px;
+}
+
+/* Selected Product */
+.product-card.selected {
+    border: 2px solid #0047ab;
+    border-radius: 8px;
+}
+
+/* Product Image */
+.product-image {
+    width: 100%;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 0px;
+}
+
+/* Product Info */
+.product-info {
+    font-size: 15px;
+    /* margin-top: 5px; */
+    color: #333;
+    /* color: #8b8fa9; */
+    font-weight: 500;
+}
+
+.forword-btn {
+    width: 30px;
+}
+
+/* rigth container */
+.price-product-card{
+    border: 2px solid black;
+    padding: 20px;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.price {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.shipping-info {
+    margin-top: 5px;
+}
+
+.location {
+    color: blue;
+    font-weight: bold;
+}
+
+.update-location {
+    color: blue;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.stock {
+    color: green;
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.quantity-label {
+    font-size: 16px;
+}
+
+.quantity-dropdown {
+    width: 100%;
+    padding: 5px;
+    margin: 5px 0;
+}
+.quntity-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-to-cart {
+    background-color: #ffcc00;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.buy-now {
+    background-color: #ff9900;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+.add-power-cart{
+    background-color: #eb920c;
+    border: none;
+    padding: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.seller-info,
+.sold-by,
+.returns,
+.payment {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+a {
+    color: blue;
+    text-decoration: none;
+}
+/* youtube */
+.youtube-main-container {
+    max-width: 560px; /* Set max width */
+    width: 100%;
+    margin-top: 0 auto; /* Center the video */
+}
+
+.youtube-main-container iframe {
+    width: 100%;
+    height: 515px; /* Fix height */
 }
